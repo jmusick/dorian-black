@@ -115,6 +115,17 @@ body {
 	min-height: 100%;
 }
 
+/* Anchored/focused targets must clear the sticky header and, while it is
+   showing, the cookie banner (--cc-offset is set by CookieConsent.astro). */
+html {
+	scroll-padding-top: var(--header-offset, 7.5rem);
+	scroll-padding-bottom: var(--cc-offset, 0px);
+}
+
+body {
+	padding-bottom: var(--cc-offset, 0px);
+}
+
 body {
 	margin: 0;
 	font-family: var(--font-body);
