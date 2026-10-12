@@ -21,6 +21,9 @@ export const ALBUM = {
 	status: "Out now",
 	year: 2026,
 	releaseDate: "2026-08-14" as string | null,
+	/** Dedicated <meta name="description"> for the Music page (<=155 chars); do not reuse `blurb`. */
+	metaDescription:
+		"After Tonight, the synth-pop debut album by Dorian Black. Twelve tracks about the hours after last call. Stream it on Spotify.",
 	blurb:
 		"Twelve songs about the hours between last call and sunrise — crowded rooms, reckless attraction, and the quiet that arrives when the party finally ends.",
 	spotifyUrl: "https://open.spotify.com/album/1b10wj76W5exnmt1wkNlbW",

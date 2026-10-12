@@ -3,7 +3,7 @@ import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import cover from "../assets/after-tonight-cover.png";
 import { ALBUM, ALBUM_RUNTIME, TRACK_COUNT } from "../data/album";
-import { SITE_NAME, SITE_TAGLINE, SITE_URL } from "../config/site";
+import { META_DESCRIPTIONS, SITE_NAME, SITE_TAGLINE, SITE_URL } from "../config/site";
 
 const canonicalUrl = `${SITE_URL}/`;
 
@@ -28,8 +28,8 @@ const spotifyEmbedHeight = Math.min(760, Math.max(352, 170 + ALBUM.tracks.length
 ---
 
 <Layout
-	title={`${SITE_NAME} — ${ALBUM.title}`}
-	description={ALBUM.blurb}
+	title={`${SITE_NAME} | Synth-Pop Artist — ${ALBUM.title}`}
+	description={META_DESCRIPTIONS.home}
 	canonicalUrl={canonicalUrl}
 	structuredData={structuredData}
 	active="home"

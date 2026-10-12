@@ -4,13 +4,13 @@ import Layout from "../layouts/Layout.astro";
 import {
 	ACTIVE_SOCIALS,
 	CONTACT_EMAIL,
+	META_DESCRIPTIONS,
 	SITE_NAME,
 	SITE_URL,
 	TURNSTILE_SITE_KEY,
 } from "../config/site";
 
 const canonicalUrl = `${SITE_URL}/contact/`;
-const description = `Contact ${SITE_NAME} for booking, press, licensing, collaborations, and general enquiries.`;
 
 /** Cloudflare's documented always-passes key keeps the form usable on localhost. */
 const TURNSTILE_DEV_TEST_KEY = "1x00000000000000000000AA";
@@ -21,8 +21,8 @@ const functionUnavailable = import.meta.env.DEV;
 ---
 
 <Layout
-	title={`Contact — ${SITE_NAME}`}
-	description={description}
+	title={`Contact ${SITE_NAME} — Booking, Press & Licensing`}
+	description={META_DESCRIPTIONS.contact}
 	canonicalUrl={canonicalUrl}
 	active="contact"
 >

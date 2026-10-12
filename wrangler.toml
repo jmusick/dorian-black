@@ -3,13 +3,18 @@ name = "dorian-black"
 account_id = "fdabb6996edf7688fdaf7c8c367f7d08"
 main = "worker/index.ts"
 compatibility_date = "2026-10-11"
-workers_dev = true
+# Disable the *.workers.dev hostname (and per-version preview URLs): zone WAF,
+# rate-limit and header rules on dorianblack.com do not apply to those hosts.
+workers_dev = false
+preview_urls = false
 routes = [{ pattern = "dorianblack.com", custom_domain = true }]
 
 [assets]
 directory = "./dist"
 binding = "ASSETS"
 run_worker_first = ["/api/*"]
+# Unknown paths get dist/404.html with a real 404 status.
+not_found_handling = "404-page"
 
 # Secrets are uploaded separately; values never belong in this file.
 [secrets]
