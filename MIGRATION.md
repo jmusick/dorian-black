@@ -33,13 +33,21 @@ Completed October 11, 2026. Account: Justin Musick
   verified active.
 - One approved migration email was accepted by Cloudflare Email Sending through
   the local contact Worker (HTTP 201), using the real email token and Cloudflare's
-  Turnstile test key. Production Turnstile configuration was not changed.
+  Turnstile test key. The user confirmed receipt in their inbox. Production
+  Turnstile configuration was not changed.
 - The browser form was checked on the production domain. The user completed
   its Turnstile challenge, but submission hit a local negative DNS cache from
   the brief gap during apex record replacement. No email was sent by that
   failed browser attempt. The local test above verifies email delivery; a
   successful production browser submission is still a follow-up once the
-  local resolver refreshes. Public DNS already returns the Worker record.
+  local resolver refreshes. Public DNS already returns the Worker record. Production pages, API method
+  handling, 404s, and the www redirect passed with TLS validation using that
+  public DNS address.
+
+- The first GitHub-triggered Workers build completed successfully for commit
+  `6a6597bea92f32279d54d65ea177a2fba9ca08fe`, deploying version
+  `9ce70340-935e-42e3-ae38-c842daac0caa` to the custom domain. Build ID:
+  `260c62d8-ee03-4a97-a4a5-7c2b067458ef`.
 
 ## Rollback
 
