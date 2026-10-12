@@ -42,6 +42,20 @@ export const ALBUM = {
 
 export const TRACK_COUNT = ALBUM.tracks.length;
 
+/**
+ * Parses an "m:ss" duration into an ISO 8601 duration (for `<time datetime>`)
+ * and a spoken form for screen readers, e.g. "4:23" -> "PT4M23S" /
+ * "4 minutes 23 seconds".
+ */
+export function formatDuration(duration: string): { iso: string; spoken: string } {
+	const [m, s] = duration.split(":").map(Number);
+	const plural = (n: number, unit: string) => `${n} ${unit}${n === 1 ? "" : "s"}`;
+	const spoken = [m > 0 && plural(m, "minute"), s > 0 && plural(s, "second")]
+		.filter(Boolean)
+		.join(" ");
+	return { iso: `PT${m}M${s}S`, spoken: spoken || "0 seconds" };
+}
+
 /** Total runtime, formatted as "Nh Nm" / "Nm". */
 export const ALBUM_RUNTIME = (() => {
 	const seconds = ALBUM.tracks.reduce((total, track) => {
