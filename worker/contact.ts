@@ -20,27 +20,57 @@ interface ContactPayload {
 const LIMITS = {
 	name: 100,
 	subject: 150,
+	email: 254,
 	messageMin: 10,
 	messageMax: 4000,
+	/** Turnstile tokens are at most 2048 characters. */
+	captchaToken: 2048,
+	/** Generous for four short fields plus a 4000-character message. */
+	bodyBytes: 16 * 1024,
 } as const;
+
+/**
+ * Production values. wrangler.toml `[vars]` repeats these, and `.dev.vars`
+ * overrides them for `npm run dev:worker` (Cloudflare's Turnstile test keys
+ * report hostname "example.com" and no action, and the page is served from
+ * http://localhost:8787). Never relax them in wrangler.toml.
+ */
+const DEFAULT_ORIGIN = "https://dorianblack.com";
+const DEFAULT_TURNSTILE_HOSTNAME = "dorianblack.com";
+/** Must match `data-action` on the widget in src/pages/contact.astro. */
+const DEFAULT_TURNSTILE_ACTION = "contact";
 
 /** Sender must be on a connected and verified Email Sending domain. */
 const DEFAULT_FROM = "contact@dorianblack.com";
 /** Destination inbox — keep in step with CONTACT_EMAIL in src/config/site.ts. */
 const DEFAULT_TO = "hello@dorianblack.com";
 
-const json = (payload: Record<string, unknown>, status = 200): Response =>
+const json = (
+	payload: Record<string, unknown>,
+	status = 200,
+	extraHeaders: Record<string, string> = {},
+): Response =>
 	new Response(JSON.stringify(payload), {
 		status,
 		headers: {
 			"Content-Type": "application/json",
 			"Cache-Control": "no-store",
+			...extraHeaders,
 		},
 	});
 
 const asString = (value: unknown): string => (typeof value === "string" ? value.trim() : "");
 
-const isValidEmail = (value: string): boolean => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+/**
+ * Deliberately stricter than RFC 5322: no whitespace, control/format
+ * characters, or the address-syntax characters <>()[],;:" -- the address is
+ * used as `reply_to` and shown in the notification email.
+ */
+const EMAIL_PATTERN =
+	/^[^\s@<>()[\],;:"\p{Cc}\p{Cf}]+@[^\s@<>()[\],;:"\p{Cc}\p{Cf}]+\.[^\s@<>()[\],;:"\p{Cc}\p{Cf}]+$/u;
+
+const isValidEmail = (value: string): boolean =>
+	value.length <= LIMITS.email && EMAIL_PATTERN.test(value);
 
 const escapeHtml = (value: string): string =>
 	value
@@ -50,8 +80,54 @@ const escapeHtml = (value: string): string =>
 		.replace(/"/g, "&quot;")
 		.replace(/'/g, "&#39;");
 
-/** Strip line breaks from values interpolated into header-like fields. */
-const singleLine = (value: string): string => value.replace(/[\r\n]+/g, " ").trim();
+/**
+ * Collapse values interpolated into header-like fields (the subject) to one
+ * plain line. Control characters (\p{Cc}, including CR/LF/NUL) and the Unicode
+ * line/paragraph separators U+2028/2029 become spaces; format characters
+ * (\p{Cf}: bidi overrides U+202A-202E and U+2066-2069, zero-width characters)
+ * are removed so they cannot spoof the subject in an inbox.
+ */
+const singleLine = (value: string): string =>
+	value
+		.replace(/[\p{Cc}\p{Zl}\p{Zp}]+/gu, " ")
+		.replace(/\p{Cf}+/gu, "")
+		.trim();
+
+interface SiteverifyResponse {
+	success?: boolean;
+	hostname?: string;
+	action?: string;
+	"error-codes"?: string[];
+}
+
+/** Read the body as text, giving up once more than `maxBytes` have arrived. */
+const readBodyLimited = async (request: Request, maxBytes: number): Promise<string | null> => {
+	const declared = Number(request.headers.get("Content-Length"));
+	if (Number.isFinite(declared) && declared > maxBytes) return null;
+	if (!request.body) return "";
+
+	const reader = request.body.getReader();
+	const chunks: Uint8Array[] = [];
+	let received = 0;
+	for (;;) {
+		const { done, value } = await reader.read();
+		if (done) break;
+		received += value.byteLength;
+		if (received > maxBytes) {
+			await reader.cancel().catch(() => undefined);
+			return null;
+		}
+		chunks.push(value);
+	}
+
+	const bytes = new Uint8Array(received);
+	let offset = 0;
+	for (const chunk of chunks) {
+		bytes.set(chunk, offset);
+		offset += chunk.byteLength;
+	}
+	return new TextDecoder().decode(bytes);
+};
 
 const verifyTurnstile = async (
 	request: Request,
@@ -59,6 +135,9 @@ const verifyTurnstile = async (
 	token: string,
 ): Promise<{ ok: true } | { ok: false; status: number; error: string; code?: string }> => {
 	if (!env.TURNSTILE_SECRET_KEY) {
+		console.error(
+			JSON.stringify({ message: "Contact form unconfigured", missing: ["TURNSTILE_SECRET_KEY"] }),
+		);
 		return {
 			ok: false,
 			status: 503,
@@ -69,6 +148,10 @@ const verifyTurnstile = async (
 
 	if (!token) {
 		return { ok: false, status: 400, error: "Please complete the verification challenge." };
+	}
+
+	if (token.length > LIMITS.captchaToken) {
+		return { ok: false, status: 400, error: "Verification failed. Please try again." };
 	}
 
 	const body = new URLSearchParams({
@@ -84,11 +167,31 @@ const verifyTurnstile = async (
 			headers: { "Content-Type": "application/x-www-form-urlencoded" },
 			body: body.toString(),
 		});
-		const data = (await response.json()) as { success?: boolean };
+		const data = (await response.json()) as SiteverifyResponse | null;
 
-		return data?.success
-			? { ok: true }
-			: { ok: false, status: 400, error: "Verification failed. Please try again." };
+		const failed = { ok: false, status: 400, error: "Verification failed. Please try again." } as const;
+		if (!data?.success) {
+			console.error(
+				JSON.stringify({ message: "Turnstile verification failed", errorCodes: data?.["error-codes"] ?? [] }),
+			);
+			return failed;
+		}
+
+		// A valid token minted for another site or widget must not pass here.
+		const expectedHostname: string = env.TURNSTILE_HOSTNAME ?? DEFAULT_TURNSTILE_HOSTNAME;
+		const expectedAction: string = env.TURNSTILE_ACTION ?? DEFAULT_TURNSTILE_ACTION;
+		if (data.hostname !== expectedHostname || (expectedAction && data.action !== expectedAction)) {
+			console.error(
+				JSON.stringify({
+					message: "Turnstile hostname/action mismatch",
+					hostname: data.hostname,
+					action: data.action,
+				}),
+			);
+			return failed;
+		}
+
+		return { ok: true };
 	} catch {
 		return { ok: false, status: 502, error: "Could not reach the verification service." };
 	}
@@ -176,9 +279,40 @@ const buildBodies = (fields: { name: string; email: string; subject: string; mes
 };
 
 const handlePost = async (request: Request, env: Env): Promise<Response> => {
+	// Reject cross-site posts. Browsers always send Origin on cross-origin
+	// POSTs; its absence means a non-browser client, which Turnstile still gates.
+	const origin = request.headers.get("Origin");
+	const allowedOrigin: string = env.ALLOWED_ORIGIN ?? DEFAULT_ORIGIN;
+	if (origin !== null && origin !== allowedOrigin) {
+		return json({ error: "Forbidden." }, 403);
+	}
+
+	// Requiring application/json rules out cross-site "simple" requests
+	// (text/plain, form-encoded) that skip the CORS preflight.
+	const contentType = request.headers.get("Content-Type") ?? "";
+	if (contentType.split(";")[0].trim().toLowerCase() !== "application/json") {
+		return json({ error: "Unsupported media type." }, 415);
+	}
+
+	// Per-IP throttle runs before the body is parsed or Turnstile is called.
+	const clientIp = request.headers.get("CF-Connecting-IP") ?? "unknown";
+	const { success: withinLimit } = await env.CONTACT_LIMITER.limit({ key: clientIp });
+	if (!withinLimit) {
+		return json(
+			{ error: "Too many messages from your connection. Please wait a minute and try again." },
+			429,
+			{ "Retry-After": "60" },
+		);
+	}
+
+	const rawBody = await readBodyLimited(request, LIMITS.bodyBytes);
+	if (rawBody === null) {
+		return json({ error: "Request too large." }, 413);
+	}
+
 	let payload: ContactPayload;
 	try {
-		const value = await request.json();
+		const value: unknown = JSON.parse(rawBody);
 		if (!value || typeof value !== "object" || Array.isArray(value)) {
 			return json({ error: "Malformed request." }, 400);
 		}
@@ -187,9 +321,10 @@ const handlePost = async (request: Request, env: Env): Promise<Response> => {
 		return json({ error: "Malformed request." }, 400);
 	}
 
-	// Make honeypot submissions look successful without sending anything.
+	// Make honeypot submissions look successful (same 201 as a real send)
+	// without sending anything.
 	if (asString(payload.website)) {
-		return json({ message: "Thanks — your message has been sent." });
+		return json({ message: "Thanks — your message has been sent." }, 201);
 	}
 
 	const name = singleLine(asString(payload.name));
@@ -222,17 +357,17 @@ const handlePost = async (request: Request, env: Env): Promise<Response> => {
 	}
 
 	if (!env.CLOUDFLARE_API_TOKEN || !env.CLOUDFLARE_ACCOUNT_ID) {
-		return json(
-			{
-				error: "The contact form is not configured.",
-				code: "email_unconfigured",
+		// Name the missing settings in the logs only, never in the response.
+		console.error(
+			JSON.stringify({
+				message: "Contact form unconfigured",
 				missing: [
 					!env.CLOUDFLARE_API_TOKEN && "CLOUDFLARE_API_TOKEN",
 					!env.CLOUDFLARE_ACCOUNT_ID && "CLOUDFLARE_ACCOUNT_ID",
 				].filter(Boolean),
-			},
-			503,
+			}),
 		);
+		return json({ error: "The contact form is not configured.", code: "email_unconfigured" }, 503);
 	}
 
 	const { text, html } = buildBodies({ name, email, subject, message });
@@ -260,4 +395,4 @@ const handlePost = async (request: Request, env: Env): Promise<Response> => {
 export const handleContact = async (request: Request, env: Env): Promise<Response> =>
 	request.method === "POST"
 		? handlePost(request, env)
-		: json({ error: "Method not allowed." }, 405);
+		: json({ error: "Method not allowed." }, 405, { Allow: "POST" });

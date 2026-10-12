@@ -14,6 +14,16 @@ EMAIL_FROM_CONTACT=
 # use the default in worker/contact.ts.
 CONTACT_TO_EMAIL=
 
-# Server-side secret for the Turnstile widget whose public key is provided at
-# build time through PUBLIC_TURNSTILE_SITE_KEY.
+# Server-side secret for the Turnstile widget. For local testing use
+# Cloudflare's always-passes test secret (it pairs with the test site key the
+# dev build uses): 1x0000000000000000000000000000000AA
 TURNSTILE_SECRET_KEY=
+
+# Local-only overrides of the strict production checks in wrangler.toml [vars].
+# `npm run dev:worker` serves the page from http://localhost:8787, and
+# Cloudflare's Turnstile test keys report hostname "example.com" and no action.
+# Keep these in .dev.vars only; production uses the wrangler.toml values.
+ALLOWED_ORIGIN=http://localhost:8787
+TURNSTILE_HOSTNAME=example.com
+# Empty skips the action check (test keys return no action).
+TURNSTILE_ACTION=
