@@ -71,11 +71,11 @@ const showConsentBanner = GA_MEASUREMENT_ID !== null;
 	</head>
 	<body>
 		<a class="skip-link" href="#main">Skip to content</a>
+		{showConsentBanner && <CookieConsent measurementId={ANALYTICS_ID} />}
 		<SiteHeader active={active} />
 		<main id="main">
 			<slot />
 		</main>
 		<SiteFooter />
-		{showConsentBanner && <CookieConsent measurementId={ANALYTICS_ID} />}
 	</body>
 </html>
