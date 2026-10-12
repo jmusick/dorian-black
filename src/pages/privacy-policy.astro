@@ -1,6 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { CONTACT_EMAIL, SITE_NAME, SITE_URL } from "../config/site";
+import { CONTACT_EMAIL, META_DESCRIPTIONS, SITE_NAME, SITE_URL } from "../config/site";
 
 const canonicalUrl = `${SITE_URL}/privacy-policy/`;
 const lastUpdated = "October 11, 2026";
@@ -8,7 +8,7 @@ const lastUpdated = "October 11, 2026";
 
 <Layout
 	title={`Privacy Policy — ${SITE_NAME}`}
-	description={`Privacy Policy for the ${SITE_NAME} website.`}
+	description={META_DESCRIPTIONS.privacy}
 	canonicalUrl={canonicalUrl}
 >
 	<div class="page">

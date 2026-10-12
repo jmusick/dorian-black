@@ -1,4 +1,5 @@
 import pkg from "../../package.json";
+import { ALBUM, TRACK_COUNT } from "../data/album";
 
 /** Sourced from package.json — bump the version there (and tag the release to match) to update this everywhere. */
 export const SITE_VERSION: string = pkg.version;
@@ -84,3 +85,18 @@ export const ACTIVE_SOCIALS = SOCIALS.filter(
 
 /** Contact-form destination and fallback address when Turnstile is unavailable. */
 export const CONTACT_EMAIL = "hello@dorianblack.com";
+
+/**
+ * Dedicated meta descriptions (<=155 chars each; scripts/check-seo.mjs checks
+ * the built output). Kept separate from on-page copy so search snippets can be
+ * tuned without touching the page. Built only from facts already in the repo:
+ * artist name, synth-pop genre, album name and track count. The Music page's
+ * description lives on ALBUM.metaDescription in src/data/album.ts.
+ */
+export const META_DESCRIPTIONS = {
+	home: `${SITE_NAME} is a synth-pop artist. Hear the debut album ${ALBUM.title}, ${TRACK_COUNT} songs for the hours between last call and sunrise.`,
+	// PLACEHOLDER: deliberately generic until approved bio copy exists. Do not add biography facts here.
+	about: `About ${SITE_NAME}, a synth-pop artist, and the debut album ${ALBUM.title}.`,
+	contact: `Contact ${SITE_NAME} for booking, press, licensing, collaborations, and general enquiries.`,
+	privacy: `How the ${SITE_NAME} website handles contact-form messages, optional analytics cookies, and your privacy choices.`,
+} as const;

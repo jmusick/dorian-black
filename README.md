@@ -76,9 +76,11 @@ npm run preview
 ## Deploy
 
 Cloudflare Worker `dorian-black`, via `wrangler.toml`, served on the custom
-domain `dorianblack.com` (`www` redirects to the apex). The Worker is also
-reachable at `https://dorian-black.jd-fda.workers.dev` while `workers_dev` is
-enabled (see issue #6). Astro builds static assets into `dist/`;
+domain `dorianblack.com` (`www` redirects to the apex). The `*.workers.dev`
+hostname and per-version preview URLs are disabled (`workers_dev = false`,
+`preview_urls = false`), so the custom domain is the only public entry point and
+zone-level WAF, rate-limit and header rules always apply. Unknown paths serve
+`dist/404.html` with a 404 status (`not_found_handling = "404-page"`). Astro builds static assets into `dist/`;
 `worker/index.ts` routes only the contact API to server code. Publish locally
 with:
 
@@ -123,8 +125,8 @@ Rate limiting uses a Workers Rate Limiting binding (`CONTACT_LIMITER`,
 periods, and counters are per Cloudflare location and eventually consistent, so
 it is a burst limiter rather than exact accounting. For a longer window (for
 example 5 per 10 minutes), add a zone WAF rate-limiting rule on
-`dorianblack.com/api/contact` in the dashboard; zone rules do not cover the
-workers.dev hostname.
+`dorianblack.com/api/contact` in the dashboard; zone rules do not cover a
+workers.dev hostname (now disabled).
 
 Production configuration:
 

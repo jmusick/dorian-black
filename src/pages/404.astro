@@ -1,0 +1,30 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { SITE_NAME, SITE_URL } from "../config/site";
+
+// Layout requires a canonical URL. This page is served (with a 404 status) for
+// every unknown path, so there is no single self-URL; point at the page's own
+// build path. Crawlers ignore canonicals on 404 responses, and robots is
+// noindex anyway.
+const canonicalUrl = `${SITE_URL}/404/`;
+---
+
+<Layout
+	title={`Page not found — ${SITE_NAME}`}
+	description="The page you were looking for does not exist."
+	canonicalUrl={canonicalUrl}
+	robots="noindex,follow"
+>
+	<div class="page">
+		<p class="eyebrow">Error 404</p>
+		<h1 style="margin-top: var(--space-3)">Page not found</h1>
+		<p class="lede" style="margin-top: var(--space-5)">
+			That page doesn't exist or has moved. Try one of these instead.
+		</p>
+		<div class="hero-cta" style="margin-top: var(--space-7)">
+			<a class="btn btn-primary btn-lg" href="/">Home</a>
+			<a class="btn btn-secondary btn-lg" href="/music/">Music</a>
+			<a class="btn btn-secondary btn-lg" href="/contact/">Contact</a>
+		</div>
+	</div>
+</Layout>
