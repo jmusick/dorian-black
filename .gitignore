@@ -1,46 +1,52 @@
-# Build output
+# Build output (astro build)
 dist/
-.output/
 
-# Generated types
+# Astro generated types and content cache
 .astro/
+
+# TypeScript incremental build info
+*.tsbuildinfo
 
 # Dependencies
 node_modules/
 
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
+# Logs (npm-debug.log, wrangler logs, etc.)
 *.log
 
-# Environment variables
+# Environment variables (only the example is tracked)
 .env
 .env.*
 !.env.example
 
-# Local secrets for Cloudflare Workers.
+# Local secrets for Cloudflare Workers (wrangler dev reads .dev.vars and .dev.vars.<env>)
 .dev.vars
 .dev.vars.*
 !.dev.vars.example
 
-# OS files
-.DS_Store
-Thumbs.db
+# Wrangler local state, bundles, and dev artifacts
+.wrangler/
 
-# Editor directories
+# Claude Code: personal settings/instructions and session worktrees.
+# .claude/launch.json (dev preview config) stays tracked.
+.claude/settings.local.json
+.claude/worktrees/
+CLAUDE.local.md
+
+# Editors: share only the VS Code config the repo relies on
 .vscode/*
 !.vscode/extensions.json
 !.vscode/launch.json
+!.vscode/tasks.json
 !.vscode/settings.json
+.idea/
+*.swp
 
-# Wrangler / Cloudflare
-.wrangler/
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
 
-# Temporary files
+# Temporary and scratch files
+.tmp/
 *.tmp
 *.temp
-
-# Local working checklist (audit findings) — not a deliverable
-TODO.md

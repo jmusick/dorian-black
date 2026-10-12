@@ -16,7 +16,7 @@ const description = `Contact ${SITE_NAME} for booking, press, licensing, collabo
 const TURNSTILE_DEV_TEST_KEY = "1x00000000000000000000AA";
 const turnstileSiteKey = import.meta.env.DEV ? TURNSTILE_DEV_TEST_KEY : TURNSTILE_SITE_KEY;
 
-/** Astro's dev server does not serve Cloudflare Pages Functions. */
+/** `astro dev` does not run the Worker, so /api/contact is unavailable there. */
 const functionUnavailable = import.meta.env.DEV;
 ---
 

@@ -21,10 +21,43 @@ The site's visual language uses near-black backgrounds, magenta/violet/blue neon
   until filled in).
 - The Contact page, Turnstile widget, and Email Sending handler are configured;
   production requires encrypted Worker secrets for the API token and Turnstile.
-- No confirmed release date (`src/data/album.ts` `ALBUM.releaseDate`).
+- `src/data/album.ts` `ALBUM.releaseDate` currently contains `2026-08-14`.
+  Earlier documentation treated that date as unconfirmed; confirm it against
+  the release record before treating it as approved metadata.
 - Track order in `src/data/album.ts` is a proposed sequence, not a confirmed master order.
 
+The site has Home, Music, About, Contact, and Privacy Policy pages. The Music
+page reads its track listing and WAV-derived durations from
+[src/data/album.ts](src/data/album.ts). Official streaming and social profile
+URLs are maintained in [src/config/site.ts](src/config/site.ts).
+
+## Workspace and documentation
+
+The active website source is `C:\Users\JD\source\dorian-black`. Website setup,
+architecture, styling, public-copy status, deployment, and technical follow-up
+belong in this repository's Markdown documentation. Coding conventions live
+in [AGENTS.md](AGENTS.md); this README owns the website's content checks.
+
+Original creative assets and song text live in
+`C:\Users\JD\projects\dorian-black`, separately from the optimized copies used
+by the site in `public/`. The project library uses lowercase kebab-case folders:
+
+- `assets/brand/` — approved logo masters.
+- `assets/albums/after-tonight/` — original WAVs, approved cover, and individual
+  song `.txt` files in `lyrics/`.
+- `assets/albums/second-nature/lyrics/` — working song text for the next album.
+- `assets/social/` — campaign masters and platform upload copies.
+- `assets/concepts/` — exploratory artwork.
+- `sources/` — historical drafts, exports, recovery provenance, and backups.
+
+The project's `README.md` and `LYRICS.md` index those files. The source does not
+import lyrics, raw recovery archives, or original media at build time. The
+album data remains the single source for the website's display metadata;
+asset indexes and playlist order do not establish a final master sequence.
+
 ## Development
+
+Requires Node `>=22.12.0`.
 
 ```bash
 npm install
@@ -42,9 +75,12 @@ npm run preview
 
 ## Deploy
 
-Cloudflare Worker `dorian-black`, via `wrangler.toml`. Astro builds static assets
-into `dist/`; `worker/index.ts` routes only the contact API to server code.
-Publish locally with:
+Cloudflare Worker `dorian-black`, via `wrangler.toml`, served on the custom
+domain `dorianblack.com` (`www` redirects to the apex). The Worker is also
+reachable at `https://dorian-black.jd-fda.workers.dev` while `workers_dev` is
+enabled (see issue #6). Astro builds static assets into `dist/`;
+`worker/index.ts` routes only the contact API to server code. Publish locally
+with:
 
 ```bash
 npm run deploy
@@ -54,7 +90,12 @@ Worker Builds connects to `jmusick/dorian-black`, production branch
 `master`, build command `npm run build`, deploy command `npx wrangler deploy`.
 Build variables and runtime secrets are separate in Workers.
 
-Migration tracking and cutover checks are in [MIGRATION.md](MIGRATION.md).
+DNS for `dorianblack.com` is managed in Cloudflare. The Worker owns the apex
+custom-domain record; the `www` → apex redirect and mail records are separate
+zone records. To roll back, restore an earlier version from the Worker's
+deployment history. The site moved from Cloudflare Pages to Workers on
+2026-10-11 and the Pages project was deleted, so there is no Pages deployment
+to fall back to.
 
 ## Contact form
 
@@ -67,16 +108,49 @@ Production configuration:
 | Location | Type | Name |
 | --- | --- | --- |
 | `wrangler.toml` `[vars]` | Plaintext | `CLOUDFLARE_ACCOUNT_ID` |
+| `wrangler.toml` `[vars]` | Plaintext | `EMAIL_FROM_CONTACT` (`contact@dorianblack.com`) |
+| `wrangler.toml` `[vars]` | Plaintext | `CONTACT_TO_EMAIL` (`hello@dorianblack.com`) |
 | Worker secret | Encrypted | `CLOUDFLARE_API_TOKEN` |
 | Worker secret | Encrypted | `TURNSTILE_SECRET_KEY` |
 
 The API token needs `Email Sending: Edit` permission for the account. The
-Worker handler defaults to `contact@dorianblack.com` as its verified sender and
-`hello@dorianblack.com` as its destination; `EMAIL_FROM_CONTACT` and
-`CONTACT_TO_EMAIL` can override those at runtime.
+sender must stay on the verified `dorianblack.com` domain; the handler falls
+back to the same two addresses if the vars are missing.
 
 The public Turnstile site key is committed in `src/config/site.ts` so the form
 cannot silently disappear when a build variable is missing.
 `PUBLIC_TURNSTILE_SITE_KEY` remains an optional build-time override. Copy
 `.dev.vars.example` to `.dev.vars` for local Worker testing; never commit the
 populated file.
+
+## Analytics and cookie consent
+
+Google Analytics 4 is opt-in. `GA_MEASUREMENT_ID` in
+[src/config/site.ts](src/config/site.ts) is passed to
+[CookieConsent.astro](src/components/CookieConsent.astro), which loads gtag.js
+only after acceptance. Analytics is disabled in `astro dev`; the footer's
+"Cookie choices" button reopens preferences. Keep the Analytics section of
+[the privacy policy](src/pages/privacy-policy.astro) aligned with this behavior.
+
+Google Fonts still load before consent through `public/universal.css`, so the
+banner's "Nothing is sent to Google unless you accept" is not yet accurate.
+Self-hosting the fonts is tracked in issue #4.
+
+## Known issues and backlog
+
+A security, SEO, and accessibility audit on 2026-10-11 filed 25 GitHub issues,
+labelled by category and priority (`priority: P1` first, then P2, P3):
+
+- [Security](https://github.com/jmusick/dorian-black/issues?q=is%3Aissue+is%3Aopen+label%3Asecurity)
+  — dependency upgrade (Astro 7, npm audit), response headers/CSP, contact
+  endpoint rate limiting and hardening, workers.dev exposure, pre-consent
+  Google Fonts.
+- [SEO](https://github.com/jmusick/dorian-black/issues?q=is%3Aissue+is%3Aopen+label%3Aseo)
+  — 404 page, linked JSON-LD, titles/descriptions, share image, favicons,
+  caching and LCP, content depth.
+- [Accessibility](https://github.com/jmusick/dorian-black/issues?q=is%3Aissue+is%3Aopen+label%3Aaccessibility)
+  — link underlines, muted-text and input-border contrast, cookie banner
+  overlap and focus, mobile menu focus order, form errors, tracklist semantics.
+
+Highest priority: [#1 Astro / npm audit upgrade](https://github.com/jmusick/dorian-black/issues/1)
+and [#7 underline inline links](https://github.com/jmusick/dorian-black/issues/7).
