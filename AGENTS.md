@@ -62,7 +62,9 @@ npm run types:worker  # regenerate worker-configuration.d.ts
 ```
 
 `.claude/launch.json` defines a `dorian-black-dev` preview on port 4331 for
-browser checks.
+browser checks, and `dorian-black-worker` (`wrangler dev` on 8791, serving the
+current `dist/`) for checking response headers and the CSP. Rebuild before
+starting it.
 
 No test suite or linter is configured. Verify changes with `npm run build`
 and, for anything visual, `npm run dev` + a browser check (desktop and a
@@ -149,9 +151,14 @@ Target WCAG 2.2 AA. Don't regress what already passes:
 
 - Never commit secrets. `.dev.vars` and `.env` are gitignored; only
   `.dev.vars.example` / `.env.example` belong in git.
-- Any new third-party origin (script, font, frame, image) requires updating
-  the CSP once it exists (#2), the privacy policy, and — if it contacts the
+- Security headers and the CSP live in `public/_headers`. Any new
+  third-party origin (script, font, frame, image) requires updating that CSP,
+  the privacy policy, and — if it contacts the
   third party before consent — the cookie banner wording (#4).
+- Inline `<script>`s are allowed by sha256 hash, which
+  `src/integrations/csp-headers.mjs` writes into `dist/_headers` on every
+  build, so never hand-edit hashes. The CSP ships as `Report-Only` until it has
+  been watched in production.
 - External `target="_blank"` links keep `rel="noopener noreferrer"`.
 - Client scripts write user-visible text with `textContent`, never
   `innerHTML`. `set:html` is only for static JSON-LD built from repo data.

@@ -72,6 +72,7 @@ const spotifyEmbedHeight = Math.min(760, Math.max(352, 170 + ALBUM.tracks.length
 						height={spotifyEmbedHeight}
 						frameborder="0"
 						allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+						referrerpolicy="strict-origin-when-cross-origin"
 						title={`${ALBUM.title} on Spotify`}></iframe>
 				</template>
 				<noscript>

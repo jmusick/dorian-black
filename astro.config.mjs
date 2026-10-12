@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import icon from 'astro-icon';
 import sitemap from '@astrojs/sitemap';
+import cspHeaders from './src/integrations/csp-headers.mjs';
 
 // https://astro.build/config
 export default defineConfig({
@@ -12,5 +13,5 @@ export default defineConfig({
 	server: {
 		port: 4321,
 	},
-	integrations: [icon(), sitemap()],
+	integrations: [icon(), sitemap(), cspHeaders()],
 });
