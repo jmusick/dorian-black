@@ -3,17 +3,9 @@
 /**
  * Contact form endpoint — POST /api/contact
  *
- * This Cloudflare Pages Function verifies Turnstile and sends the message
+ * This Cloudflare Worker handler verifies Turnstile and sends the message
  * through Cloudflare Email Sending. The rest of the site remains static.
  */
-
-interface Env {
-	CLOUDFLARE_API_TOKEN?: string;
-	CLOUDFLARE_ACCOUNT_ID?: string;
-	EMAIL_FROM_CONTACT?: string;
-	CONTACT_TO_EMAIL?: string;
-	TURNSTILE_SECRET_KEY?: string;
-}
 
 interface ContactPayload {
 	name?: unknown;
@@ -186,7 +178,11 @@ const buildBodies = (fields: { name: string; email: string; subject: string; mes
 const handlePost = async (request: Request, env: Env): Promise<Response> => {
 	let payload: ContactPayload;
 	try {
-		payload = (await request.json()) as ContactPayload;
+		const value = await request.json();
+		if (!value || typeof value !== "object" || Array.isArray(value)) {
+			return json({ error: "Malformed request." }, 400);
+		}
+		payload = value as ContactPayload;
 	} catch {
 		return json({ error: "Malformed request." }, 400);
 	}
@@ -254,14 +250,14 @@ const handlePost = async (request: Request, env: Env): Promise<Response> => {
 			env,
 		);
 	} catch (error) {
-		console.error("Contact email send failed", error);
+		console.error(JSON.stringify({ message: "Contact email send failed", error: error instanceof Error ? error.message : String(error) }));
 		return json({ error: "Could not send your message. Please try again in a moment." }, 502);
 	}
 
 	return json({ message: "Thanks — your message has been sent." }, 201);
 };
 
-export const onRequest: PagesFunction<Env> = async ({ request, env }) =>
+export const handleContact = async (request: Request, env: Env): Promise<Response> =>
 	request.method === "POST"
 		? handlePost(request, env)
 		: json({ error: "Method not allowed." }, 405);

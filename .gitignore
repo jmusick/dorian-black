@@ -20,7 +20,7 @@ pnpm-debug.log*
 .env.*
 !.env.example
 
-# Local secrets for Cloudflare Pages Functions.
+# Local secrets for Cloudflare Workers.
 .dev.vars
 .dev.vars.*
 !.dev.vars.example

@@ -1,9 +1,28 @@
-# Must match the existing Cloudflare Pages project exactly.
-name = "dorianblack"
-pages_build_output_dir = "dist"
-compatibility_date = "2026-08-16"
+# Worker serving Astro's static build and the contact endpoint.
+name = "dorian-black"
+account_id = "fdabb6996edf7688fdaf7c8c367f7d08"
+main = "worker/index.ts"
+compatibility_date = "2026-10-11"
+workers_dev = true
+routes = [{ pattern = "dorianblack.com", custom_domain = true }]
 
-# Plaintext Function configuration belongs here. Secrets stay in the Pages
-# dashboard or are set with `wrangler pages secret put NAME`.
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
+
+# Secrets are uploaded separately; values never belong in this file.
+[secrets]
+required = ["CLOUDFLARE_API_TOKEN", "TURNSTILE_SECRET_KEY"]
+
 [vars]
 CLOUDFLARE_ACCOUNT_ID = "fdabb6996edf7688fdaf7c8c367f7d08"
+EMAIL_FROM_CONTACT = "contact@dorianblack.com"
+CONTACT_TO_EMAIL = "hello@dorianblack.com"
+
+[observability]
+enabled = true
+
+[observability.traces]
+enabled = true
+head_sampling_rate = 0.01

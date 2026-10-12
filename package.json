@@ -9,6 +9,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "dev:worker": "npm run build && wrangler dev",
+    "deploy": "npm run build && wrangler deploy",
+    "types:worker": "wrangler types --include-runtime=false",
     "astro": "astro"
   },
   "dependencies": {
@@ -20,6 +23,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260816.1",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "wrangler": "^4.149.0"
   }
 }

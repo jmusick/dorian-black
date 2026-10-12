@@ -5,7 +5,7 @@ Guidance for AI coding agents working in this repo.
 ## What this is
 
 Marketing site for Dorian Black, a synth-pop recording artist. Astro static
-site, deployed to Cloudflare Pages. See [README.md](README.md) for the
+site, deployed to Cloudflare Workers. See [README.md](README.md) for the
 visual-style background and current content-status caveats (fonts, icons,
 release info) — read it before touching visual styling or copy.
 
@@ -16,8 +16,8 @@ release info) — read it before touching visual styling or copy.
 - Styling is hand-written CSS. Design tokens and shared component styles live
   in [public/universal.css](public/universal.css).
 - Icons via `astro-icon` + `@iconify-json/simple-icons` / `lucide`.
-- Deploy target: Cloudflare Pages project `dorianblack` via `wrangler.toml`
-  (`npx wrangler pages deploy dist`).
+- Deploy target: Cloudflare Worker `dorian-black` via `wrangler.toml`
+  (`npm run deploy`).
 
 ## Structure
 
@@ -32,7 +32,8 @@ release info) — read it before touching visual styling or copy.
 - `src/data/album.ts` — album/track data (`After Tonight`). Track order,
   durations, and release date here are the single source for the Music page;
   don't hardcode track info in components.
-- `functions/api/contact.ts` — the only server-side code. It validates Contact
+- `worker/index.ts` — Worker routing and static asset fallback.
+- `worker/contact.ts` — the only server-side endpoint. It validates Contact
   page submissions, verifies Turnstile, and uses Cloudflare Email Sending.
 
 ## Commands
@@ -41,7 +42,7 @@ release info) — read it before touching visual styling or copy.
 npm run dev       # astro dev, http://localhost:4321
 npm run build     # astro build -> dist/
 npm run preview   # serve the built output
-npm run build && npx wrangler pages dev dist  # include Pages Functions
+npm run dev:worker  # includes the contact Worker handler
 ```
 
 No test suite or linter is configured. Verify changes with `npm run build`
@@ -49,7 +50,7 @@ and, for anything visual, `npm run dev` + a browser check.
 
 ## Conventions
 
-- Keep the site static except for `POST /api/contact`; it is a Pages Function
+- Keep the site static except for `POST /api/contact`; it is a Worker handler
   because the Email Sending token cannot ship to the browser. Do not add other
   server routes or client-side data fetching without an explicit requirement.
   Content changes go through `src/config/site.ts` / `src/data/album.ts`, not
@@ -70,11 +71,11 @@ and, for anything visual, `npm run dev` + a browser check.
   in the API's top-level snake_case `reply_to` field; `replyTo` is invalid.
 - Treat success as `data.success`, not merely an HTTP 2xx response.
 - `CLOUDFLARE_ACCOUNT_ID` is plaintext in `wrangler.toml`. The API token and
-  `TURNSTILE_SECRET_KEY` are Pages secrets and must never be committed.
+  `TURNSTILE_SECRET_KEY` are Worker secrets and must never be committed.
 - The public Turnstile site key is committed in `src/config/site.ts`, with
   `PUBLIC_TURNSTILE_SITE_KEY` available only as an optional build override.
-  `astro dev` uses Cloudflare's test key, but does not serve the Function; use
-  a build with `wrangler pages dev dist` for end-to-end local tests.
+  `astro dev` uses Cloudflare's test key, but does not serve the Worker handler; use
+  `npm run dev:worker` for end-to-end local tests.
 - Keep the contact-form data description in `privacy-policy.astro` accurate if
   fields, providers, storage, or retention behavior change.
 

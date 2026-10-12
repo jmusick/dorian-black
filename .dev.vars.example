@@ -1,4 +1,4 @@
-# Copy to .dev.vars for `npx wrangler pages dev dist`. Never commit .dev.vars.
+# Copy to .dev.vars for `npm run dev:worker`. Never commit .dev.vars.
 
 # Cloudflare Email Sending. The API token needs Email Sending: Edit permission.
 CLOUDFLARE_API_TOKEN=
@@ -7,11 +7,11 @@ CLOUDFLARE_API_TOKEN=
 CLOUDFLARE_ACCOUNT_ID=fdabb6996edf7688fdaf7c8c367f7d08
 
 # Optional sender override. It must belong to a connected and verified Email
-# Sending domain. Leave blank to use the default in functions/api/contact.ts.
+# Sending domain. Leave blank to use the default in worker/contact.ts.
 EMAIL_FROM_CONTACT=
 
 # Optional override for the inbox that receives form messages. Leave blank to
-# use the default in functions/api/contact.ts.
+# use the default in worker/contact.ts.
 CONTACT_TO_EMAIL=
 
 # Server-side secret for the Turnstile widget whose public key is provided at
