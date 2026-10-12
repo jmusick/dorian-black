@@ -55,6 +55,9 @@ const json = (
 		headers: {
 			"Content-Type": "application/json",
 			"Cache-Control": "no-store",
+			// public/_headers does not apply to Worker-generated responses.
+			"X-Content-Type-Options": "nosniff",
+			"Content-Security-Policy": "default-src 'none'; frame-ancestors 'none'",
 			...extraHeaders,
 		},
 	});
