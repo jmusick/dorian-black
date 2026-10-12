@@ -19,6 +19,22 @@ required = ["CLOUDFLARE_API_TOKEN", "TURNSTILE_SECRET_KEY"]
 CLOUDFLARE_ACCOUNT_ID = "fdabb6996edf7688fdaf7c8c367f7d08"
 EMAIL_FROM_CONTACT = "contact@dorianblack.com"
 CONTACT_TO_EMAIL = "hello@dorianblack.com"
+# Request checks in worker/contact.ts. These are the production values;
+# .dev.vars overrides them locally (see .dev.vars.example). Do not loosen them.
+ALLOWED_ORIGIN = "https://dorianblack.com"
+TURNSTILE_HOSTNAME = "dorianblack.com"
+TURNSTILE_ACTION = "contact"
+
+# Per-IP throttle for POST /api/contact. The binding only supports a 10 s or
+# 60 s period; counters are per Cloudflare location and eventually consistent.
+# namespace_id must be unique within the account (same id = shared counters).
+[[ratelimits]]
+name = "CONTACT_LIMITER"
+namespace_id = "810301"
+
+  [ratelimits.simple]
+  limit = 3
+  period = 60
 
 [observability]
 enabled = true

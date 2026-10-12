@@ -103,6 +103,29 @@ to fall back to.
 handler in [`worker/contact.ts`](worker/contact.ts) verifies
 Turnstile and sends messages through the Cloudflare Email Sending REST API.
 
+Request handling, in order (each failure returns JSON `{ "error": ... }`):
+
+1. Non-POST: `405` with `Allow: POST`.
+2. `Origin` present and not `https://dorianblack.com`: `403`.
+3. `Content-Type` not `application/json`: `415`.
+4. Rate limit, 3 requests per 60 s per `CF-Connecting-IP`: `429` with
+   `Retry-After: 60`. This runs before the body is read and before Turnstile.
+5. Body over 16 KB: `413`. Then JSON parse and field validation (`400`).
+   A filled honeypot returns the same `201` as a real send.
+6. Turnstile siteverify: the token must be at most 2048 characters, `success`
+   must be true, and `hostname` and `action` must match (`dorianblack.com` and
+   `contact`; the widget sets `data-action="contact"`). `error-codes` are logged.
+7. Email Sending call; `201` on success, `502` on upstream failure. Missing
+   secrets return a generic `503`; the missing names go to the Worker logs only.
+
+Rate limiting uses a Workers Rate Limiting binding (`CONTACT_LIMITER`,
+`[[ratelimits]]` in `wrangler.toml`). The binding only supports 10 s or 60 s
+periods, and counters are per Cloudflare location and eventually consistent, so
+it is a burst limiter rather than exact accounting. For a longer window (for
+example 5 per 10 minutes), add a zone WAF rate-limiting rule on
+`dorianblack.com/api/contact` in the dashboard; zone rules do not cover the
+workers.dev hostname.
+
 Production configuration:
 
 | Location | Type | Name |
@@ -110,6 +133,10 @@ Production configuration:
 | `wrangler.toml` `[vars]` | Plaintext | `CLOUDFLARE_ACCOUNT_ID` |
 | `wrangler.toml` `[vars]` | Plaintext | `EMAIL_FROM_CONTACT` (`contact@dorianblack.com`) |
 | `wrangler.toml` `[vars]` | Plaintext | `CONTACT_TO_EMAIL` (`hello@dorianblack.com`) |
+| `wrangler.toml` `[vars]` | Plaintext | `ALLOWED_ORIGIN` (`https://dorianblack.com`) |
+| `wrangler.toml` `[vars]` | Plaintext | `TURNSTILE_HOSTNAME` (`dorianblack.com`) |
+| `wrangler.toml` `[vars]` | Plaintext | `TURNSTILE_ACTION` (`contact`) |
+| `wrangler.toml` `[[ratelimits]]` | Binding | `CONTACT_LIMITER` (3 per 60 s) |
 | Worker secret | Encrypted | `CLOUDFLARE_API_TOKEN` |
 | Worker secret | Encrypted | `TURNSTILE_SECRET_KEY` |
 
@@ -122,6 +149,13 @@ cannot silently disappear when a build variable is missing.
 `PUBLIC_TURNSTILE_SITE_KEY` remains an optional build-time override. Copy
 `.dev.vars.example` to `.dev.vars` for local Worker testing; never commit the
 populated file.
+
+For `npm run dev:worker` the page is served from `http://localhost:8787` and
+Cloudflare's Turnstile test keys report hostname `example.com` with no action.
+`.dev.vars.example` therefore overrides `ALLOWED_ORIGIN`, `TURNSTILE_HOSTNAME`,
+and `TURNSTILE_ACTION` for local use only, and suggests the test secret
+`1x0000000000000000000000000000000AA`. The strict values stay in
+`wrangler.toml` (and as code defaults), so production never loosens them.
 
 ## Analytics and cookie consent
 

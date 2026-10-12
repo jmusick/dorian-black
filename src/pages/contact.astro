@@ -74,6 +74,7 @@ const functionUnavailable = import.meta.env.DEV;
 				<div
 					class="cf-turnstile"
 					data-sitekey={turnstileSiteKey}
+					data-action="contact"
 					data-theme="dark"
 					data-appearance="interaction-only"
 				>
@@ -179,7 +180,11 @@ const functionUnavailable = import.meta.env.DEV;
 						| null;
 
 					if (!response.ok) {
-						setStatus(result?.error ?? "Something went wrong. Please try again.", "error");
+						const fallback =
+							response.status === 429
+								? "Too many attempts. Please wait a minute and try again."
+								: "Something went wrong. Please try again.";
+						setStatus(result?.error ?? fallback, "error");
 						window.turnstile?.reset();
 						submit.disabled = false;
 						return;
