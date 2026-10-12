@@ -736,16 +736,22 @@ img {
 		align-items: stretch;
 		margin-left: 0;
 		max-height: 0;
-		overflow: hidden;
+		overflow: clip;
 		opacity: 0;
+		/* Closed menu leaves the tab order and accessibility tree once the collapse finishes. */
+		visibility: hidden;
 		transition: max-height var(--duration-slow) var(--ease-out),
-			opacity var(--duration-base) var(--ease-out);
+			opacity var(--duration-base) var(--ease-out),
+			visibility 0s linear var(--duration-slow);
 	}
 
 	.site-head-right.is-open {
 		max-height: 32rem;
 		opacity: 1;
-		padding-bottom: var(--space-3);
+		visibility: visible;
+		overflow-clip-margin: 4px; /* keep focus outlines from being clipped */
+		padding: 4px 4px var(--space-3);
+		transition-delay: 0s;
 	}
 
 	.site-nav {
