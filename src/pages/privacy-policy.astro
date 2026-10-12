@@ -3,7 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import { CONTACT_EMAIL, SITE_NAME, SITE_URL } from "../config/site";
 
 const canonicalUrl = `${SITE_URL}/privacy-policy/`;
-const lastUpdated = "September 23, 2026";
+const lastUpdated = "October 11, 2026";
 ---
 
 <Layout
@@ -123,16 +123,16 @@ const lastUpdated = "September 23, 2026";
 						<a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer">Cloudflare Privacy Policy</a>.
 					</li>
 					<li>
-						<strong>Google Fonts</strong> — used to load the site's typefaces (Audiowide,
-						Rajdhani, Dancing Script). Google may log requests made to their font
-						servers, including IP address. See the
-						<a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google Privacy Policy</a>.
+						<strong>Fonts</strong> — the site's typefaces are served from this site
+						itself, so loading them sends nothing to Google or any other third party.
 					</li>
 					<li>
-						<strong>Spotify</strong> — the homepage embeds a Spotify album player so
-						you can preview the record without leaving the site, and we link to our
-						Spotify artist profile elsewhere. Spotify's embedded player may set its own
-						cookies and collect usage data once you interact with it. See the
+						<strong>Spotify</strong> — the homepage offers a Spotify album player so
+						you can preview the record without leaving the site. It loads only after you
+						click "Load the Spotify player"; until then nothing is requested from
+						Spotify. Once loaded, Spotify's player may set its own cookies and collect
+						usage data, including your IP address. We also link to our Spotify artist
+						profile elsewhere. See the
 						<a href="https://www.spotify.com/legal/privacy-policy/" target="_blank" rel="noopener noreferrer">Spotify Privacy Policy</a>.
 					</li>
 					<li>
@@ -149,8 +149,8 @@ const lastUpdated = "September 23, 2026";
 				<h2>Cookies</h2>
 				<p class="lede">
 					This site does not set advertising cookies. Google Analytics cookies are set
-					only if you accept them, as described above. The embedded Spotify
-					player may set its own cookies once you interact with it, subject to Spotify's
+					only if you accept them, as described above. The Spotify
+					player may set its own cookies once you choose to load it, subject to Spotify's
 					privacy policy above. Cloudflare may use strictly necessary storage while
 					protecting the contact form. You can control or delete cookies through your
 					browser settings.
