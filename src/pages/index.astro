@@ -51,13 +51,13 @@ const spotifyEmbedHeight = Math.min(760, Math.max(352, 170 + ALBUM.tracks.length
 
 	<div class="page">
 		<section>
-			<p class="eyebrow">The record</p>
-			<h2>{TRACK_COUNT} tracks · {ALBUM_RUNTIME}</h2>
+			<h2 class="eyebrow">The record</h2>
+			<p class="stat-line">{TRACK_COUNT} tracks · {ALBUM_RUNTIME}</p>
 			<p class="lede" style="margin-top: var(--space-4)">{SITE_TAGLINE}</p>
 		</section>
 
 		<section class="section">
-			<p class="eyebrow">Listen now</p>
+			<h2 class="eyebrow">Listen now</h2>
 			<div class="spotify-embed" style={`height: ${spotifyEmbedHeight}px`}>
 				<iframe
 					src={spotifyEmbedUrl}

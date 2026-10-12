@@ -2,7 +2,7 @@
 import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import cover from "../assets/after-tonight-cover.png";
-import { ALBUM, ALBUM_RUNTIME, TRACK_COUNT } from "../data/album";
+import { ALBUM, ALBUM_RUNTIME, TRACK_COUNT, formatDuration } from "../data/album";
 import { ACTIVE_SOCIALS, SITE_NAME, SITE_URL } from "../config/site";
 
 const canonicalUrl = `${SITE_URL}/music/`;
@@ -75,16 +75,22 @@ const structuredData = {
 		<hr class="rule" />
 
 		<section>
-			<p class="eyebrow">Tracklist</p>
-			<ol class="tracklist" style="margin-top: var(--space-5)">
+			<h2 class="eyebrow">Tracklist</h2>
+			{/* role="list" keeps list semantics in Safari/VoiceOver despite list-style: none. */}
+			<ol class="tracklist" role="list" style="margin-top: var(--space-5)">
 				{ALBUM.tracks.map((track) => (
 					<li class="track">
-						<span class="track-n">{String(track.n).padStart(2, "0")}</span>
+						<span class="track-n" aria-hidden="true">{String(track.n).padStart(2, "0")}</span>
 						<span>
 							<span class="track-title">{track.title}</span>
 							<span class="track-note">{track.note}</span>
 						</span>
-						<span class="track-time">{track.duration}</span>
+						<span class="track-time">
+							<time datetime={formatDuration(track.duration).iso}>
+								<span aria-hidden="true">{track.duration}</span>
+								<span class="visually-hidden">{formatDuration(track.duration).spoken}</span>
+							</time>
+						</span>
 					</li>
 				))}
 			</ol>

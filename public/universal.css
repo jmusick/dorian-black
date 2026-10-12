@@ -155,6 +155,28 @@ p {
 	margin: 0;
 }
 
+/* Stat line styled like an h2 but not a heading (e.g. "12 tracks · 49m"). */
+.stat-line {
+	font-family: var(--font-display);
+	font-size: var(--text-h2);
+	font-weight: 400;
+	line-height: var(--lh-heading);
+	color: var(--text-primary);
+}
+
+/* Visible to assistive technology only. */
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+	border: 0;
+}
+
 a {
 	color: var(--link);
 	text-decoration: none;
@@ -458,7 +480,11 @@ img {
 	margin-top: var(--space-9);
 }
 
+/* Also applied to heading elements (h2.eyebrow): reset the heading font and
+   line-height so they look identical to the original <p class="eyebrow">. */
 .eyebrow {
+	font-family: var(--font-body);
+	line-height: var(--lh-body);
 	font-size: var(--text-micro);
 	font-weight: 600;
 	letter-spacing: var(--tracking-widest);
