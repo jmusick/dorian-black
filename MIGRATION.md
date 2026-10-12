@@ -17,10 +17,11 @@ Completed October 11, 2026. Account: Justin Musick
   build command `npm run build`, deploy command `npx wrangler deploy`.
   The user approved Cloudflare's automatic `dorian-black-build` deployment
   token. Runtime secrets are separate from build variables.
-- Pages project `dorian-black` and its deployed content/secrets are retained
-  for rollback at `dorianblack.pages.dev`. Production and preview Pages builds
-  are disabled. The Pages custom-domain attachment and old apex CNAME were
-  removed; the Worker now manages its own domain record.
+- Pages project `dorian-black` was deleted at the user's request on October 11,
+  2026, after confirming it had no production custom domain and that the Worker
+  served the live site successfully. Its deployments, Pages secrets, and
+  `dorianblack.pages.dev` hosting are no longer retained. The Worker manages
+  the production custom-domain record.
 - The existing www-to-apex redirect and mail-related DNS records were retained.
 
 ## Verification
@@ -51,11 +52,12 @@ Completed October 11, 2026. Account: Justin Musick
 
 ## Rollback
 
-Remove the Worker custom domain, restore the proxied apex CNAME to
-`dorianblack.pages.dev` (TTL Auto), and reattach `dorianblack.com` to the
-retained Pages project. Restore Pages-compatible source before re-enabling
-Pages automatic builds. Saved pre-migration project settings are in ignored
-`.wrangler/pages-migration-backup.json`. The last Pages production commit was
+Use the Worker's deployment history to restore an earlier Worker version.
+There is no retained Pages deployment to switch back to. Recreating Pages
+would require a new project, restoring its secrets, and Pages-compatible
+source. Saved pre-migration project settings are in ignored
+`.wrangler/pages-migration-backup.json`; they do not include secret values.
+The last Pages production commit was
 `957876d63f967a1debb53b3acf35f139d51a2c47`.
 
 Reference: [Cloudflare migration guide](https://developers.cloudflare.com/workers/static-assets/migration-guides/migrate-from-pages/).
