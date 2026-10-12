@@ -16,7 +16,7 @@
 	--surface-border: #2e1f3d;
 	--ink-1: #f3eef9;
 	--ink-2: #b8aec9;
-	--ink-3: #766c8a;
+	--ink-3: #9389a8;
 	--magenta: #f900f9;
 	--magenta-dim: #a4009e;
 	--blue: #0168ff;
@@ -163,6 +163,15 @@ a {
 
 a:hover {
 	color: var(--link-hover);
+}
+
+/* Links in running text: underline so they aren't distinguished by color
+   alone (WCAG 1.4.1). Nav, .btn and icon links are excluded. */
+main p a:not(.btn),
+main li a:not(.btn),
+.footer-legal a {
+	text-decoration: underline;
+	text-underline-offset: 0.2em;
 }
 
 img {
@@ -428,7 +437,7 @@ img {
 }
 
 .badge-blue {
-	color: var(--blue);
+	color: #3d8bff; /* lightened --blue for 4.5:1 text contrast on void (#8) */
 	border-color: var(--blue);
 }
 
@@ -685,6 +694,8 @@ img {
 	font: inherit;
 	color: var(--link);
 	cursor: pointer;
+	text-decoration: underline;
+	text-underline-offset: 0.2em;
 	transition: color var(--duration-fast) var(--ease-out);
 }
 
@@ -700,6 +711,8 @@ img {
 	font: inherit;
 	color: var(--link);
 	cursor: pointer;
+	text-decoration: underline;
+	text-underline-offset: 0.2em;
 }
 
 .inline-link-button:hover {

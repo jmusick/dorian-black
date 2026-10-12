@@ -117,9 +117,12 @@ Target WCAG 2.2 AA. Don't regress what already passes:
   `<h1>` per page, and logical heading order. Section labels that introduce
   content should be headings, not styled `<p>`s.
 - Text must meet 4.5:1 (3:1 for large text and UI boundaries such as input
-  borders) against its actual background. `--ink-3` currently fails (#8);
-  don't use it for new body-size text.
-- Links inside running text need a non-color cue (underline) (#7).
+  borders) against its actual background. `--ink-3` (`#9389a8`) passes 4.5:1 on every
+  surface (5.5:1 on `--surface-2`, the worst case); re-check any new color
+  with the WCAG luminance formula before adding it.
+- Links inside running text are underlined (`main p a`, `main li a`,
+  `.footer-legal a`, `.cc-body a`, link-style buttons); keep a non-color cue
+  on any new inline link.
 - Icon-only links need an `aria-label`; decorative SVGs and images get
   `aria-hidden="true"` / `alt=""`.
 - Never hide focusable content with only `opacity`/`max-height` — use
