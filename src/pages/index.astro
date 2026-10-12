@@ -51,27 +51,53 @@ const spotifyEmbedHeight = Math.min(760, Math.max(352, 170 + ALBUM.tracks.length
 
 	<div class="page">
 		<section>
-			<p class="eyebrow">The record</p>
-			<h2>{TRACK_COUNT} tracks · {ALBUM_RUNTIME}</h2>
+			<h2 class="eyebrow">The record</h2>
+			<p class="stat-line">{TRACK_COUNT} tracks · {ALBUM_RUNTIME}</p>
 			<p class="lede" style="margin-top: var(--space-4)">{SITE_TAGLINE}</p>
 		</section>
 
 		<section class="section">
-			<p class="eyebrow">Listen now</p>
-			<div class="spotify-embed" style={`height: ${spotifyEmbedHeight}px`}>
-				<iframe
-					src={spotifyEmbedUrl}
-					width="100%"
-					height={spotifyEmbedHeight}
-					frameborder="0"
-					allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-					loading="lazy"
-					title={`${ALBUM.title} on Spotify`}
-				></iframe>
+			<h2 class="eyebrow">Listen now</h2>
+			<div class="spotify-embed" style={`height: ${spotifyEmbedHeight}px`} data-spotify-embed>
+				<button type="button" class="spotify-facade" data-spotify-load>
+					<span class="spotify-facade-title">Load the Spotify player</span>
+					<span class="spotify-facade-note">
+						Nothing is requested from Spotify until you click.
+					</span>
+				</button>
+				<template data-spotify-template>
+					<iframe
+						src={spotifyEmbedUrl}
+						width="100%"
+						height={spotifyEmbedHeight}
+						frameborder="0"
+						allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+						title={`${ALBUM.title} on Spotify`}></iframe>
+				</template>
+				<noscript>
+					<p class="spotify-noscript">
+						<a href={ALBUM.spotifyUrl} target="_blank" rel="noopener noreferrer">
+							Listen to {ALBUM.title} on Spotify
+						</a>
+					</p>
+				</noscript>
 			</div>
 		</section>
 	</div>
 </Layout>
+
+<script>
+	const embed = document.querySelector<HTMLElement>("[data-spotify-embed]");
+	const button = embed?.querySelector<HTMLButtonElement>("[data-spotify-load]");
+	const template = embed?.querySelector<HTMLTemplateElement>("[data-spotify-template]");
+
+	button?.addEventListener("click", () => {
+		const iframe = template?.content.querySelector("iframe")?.cloneNode(true);
+		if (!(iframe instanceof HTMLIFrameElement) || !embed || !button) return;
+		button.replaceWith(iframe);
+		iframe.focus();
+	});
+</script>
 
 <style>
 	.page {
@@ -90,8 +116,44 @@ const spotifyEmbedHeight = Math.min(760, Math.max(352, 170 + ALBUM.tracks.length
 		background: var(--bg-surface);
 	}
 
-	.spotify-embed iframe {
+	.spotify-embed :global(iframe) {
 		display: block;
 		border: 0;
+	}
+
+	.spotify-facade {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-2);
+		width: 100%;
+		height: 100%;
+		padding: var(--space-4);
+		border: 0;
+		background: var(--surface);
+		color: var(--ink-1);
+		font-family: var(--font-body);
+		text-align: center;
+		cursor: pointer;
+	}
+
+	.spotify-facade:hover {
+		background: var(--surface-2);
+	}
+
+	.spotify-facade-title {
+		font-family: var(--font-display);
+		font-size: var(--text-h3);
+		color: var(--cyan);
+	}
+
+	.spotify-facade-note {
+		font-size: var(--text-body-sm);
+		color: var(--ink-2);
+	}
+
+	.spotify-noscript {
+		padding: var(--space-4);
 	}
 </style>

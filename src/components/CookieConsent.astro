@@ -23,16 +23,14 @@ const { measurementId } = Astro.props;
 <div
 	id="cookie-consent"
 	class="cookie-consent"
-	role="dialog"
-	aria-modal="false"
-	aria-labelledby="cc-title"
-	aria-describedby="cc-body"
+	role="region"
+	aria-label="Cookie consent"
 	hidden
 >
 	<div class="cc-inner">
 		<div class="cc-text">
-			<p id="cc-title" class="cc-title">Analytics</p>
-			<p id="cc-body" class="cc-body">
+			<p class="cc-title">Analytics</p>
+			<p class="cc-body">
 				This site would like to count visits with Google Analytics, which sets cookies.
 				Nothing is sent to Google unless you accept, and the site works the same either
 				way. See the <a href="/privacy-policy/">privacy policy</a>.
@@ -99,8 +97,38 @@ const { measurementId } = Astro.props;
 			});
 		}
 
+		var root = document.documentElement;
+		var opener = null; // element that reopened the banner, if any
+		var reopened = false;
+
+		/** Keep the banner from covering page content: pad the page by its height. */
+		function syncOffset() {
+			if (banner.hidden) {
+				root.style.removeProperty("--cc-offset");
+				return;
+			}
+			var gap = parseFloat(getComputedStyle(banner).bottom) || 0;
+			root.style.setProperty("--cc-offset", banner.offsetHeight + gap + "px");
+		}
+		if (window.ResizeObserver) new ResizeObserver(syncOffset).observe(banner);
+
 		function show() {
 			banner.hidden = false;
+			syncOffset();
+		}
+
+		/** Hide the banner and keep focus somewhere sensible instead of dropping to <body>. */
+		function dismiss() {
+			var hadFocus = banner.contains(document.activeElement);
+			banner.hidden = true;
+			syncOffset();
+			reopened = false;
+			if (!hadFocus) return;
+			var target = opener && opener.isConnected ? opener : document.getElementById("main");
+			opener = null;
+			if (!target) return;
+			if (target.id === "main") target.setAttribute("tabindex", "-1");
+			target.focus();
 		}
 
 		function record(choice) {
@@ -111,7 +139,7 @@ const { measurementId } = Astro.props;
 			} catch (e) {
 				// Choice won't persist, but honour it for this page view.
 			}
-			banner.hidden = true;
+			dismiss();
 
 			if (choice === "granted") {
 				loadAnalytics();
@@ -138,8 +166,16 @@ const { measurementId } = Astro.props;
 			var trigger = event.target.closest("[data-cookie-preferences]");
 			if (!trigger) return;
 			event.preventDefault();
+			opener = trigger;
+			reopened = true;
 			show();
 			banner.querySelector("[data-consent]").focus();
+		});
+
+		// Escape closes the banner when it was reopened from the footer; it records
+		// nothing, so the earlier choice stands.
+		document.addEventListener("keydown", function (event) {
+			if (event.key === "Escape" && reopened && !banner.hidden) dismiss();
 		});
 	})();
 </script>

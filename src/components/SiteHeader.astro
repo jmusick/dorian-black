@@ -30,16 +30,16 @@ const { active = "home" } = Astro.props;
 
 		<div class="site-head-right" id="site-menu">
 			<nav class="site-nav" aria-label="Primary">
-				<a class={active === "home" ? "active" : undefined} href="/">Home</a>
-				<a class={active === "music" ? "active" : undefined} href="/music/">Music</a>
-				<a class={active === "about" ? "active" : undefined} href="/about/">About</a>
-				<a class={active === "contact" ? "active" : undefined} href="/contact/">Contact</a>
+				<a class={active === "home" ? "active" : undefined} aria-current={active === "home" ? "page" : undefined} href="/">Home</a>
+				<a class={active === "music" ? "active" : undefined} aria-current={active === "music" ? "page" : undefined} href="/music/">Music</a>
+				<a class={active === "about" ? "active" : undefined} aria-current={active === "about" ? "page" : undefined} href="/about/">About</a>
+				<a class={active === "contact" ? "active" : undefined} aria-current={active === "contact" ? "page" : undefined} href="/contact/">Contact</a>
 			</nav>
 
 			{ACTIVE_SOCIALS.length > 0 && (
 				<>
 					<div class="site-head-divider" aria-hidden="true"></div>
-					<nav class="social-nav" aria-label="Social media">
+					<nav class="social-nav" aria-label="Social media, header">
 						{ACTIVE_SOCIALS.map((s) => (
 							<a
 								href={s.href}
