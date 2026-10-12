@@ -126,6 +126,12 @@ body {
 	padding-bottom: var(--cc-offset, 0px);
 }
 
+/* <main> takes programmatic focus (tabindex=-1) after the cookie banner
+   closes; it is not a control, so don't ring the whole page. */
+main[tabindex="-1"]:focus {
+	outline: none;
+}
+
 body {
 	margin: 0;
 	font-family: var(--font-body);
