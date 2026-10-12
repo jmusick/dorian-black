@@ -166,9 +166,9 @@ only after acceptance. Analytics is disabled in `astro dev`; the footer's
 "Cookie choices" button reopens preferences. Keep the Analytics section of
 [the privacy policy](src/pages/privacy-policy.astro) aligned with this behavior.
 
-Google Fonts still load before consent through `public/universal.css`, so the
-banner's "Nothing is sent to Google unless you accept" is not yet accurate.
-Self-hosting the fonts is tracked in issue #4.
+Fonts are self-hosted (latin woff2 in `public/fonts/`, OFL licenses alongside),
+and the Spotify player loads only after a click, so nothing reaches Google
+before consent.
 
 ## Known issues and backlog
 
