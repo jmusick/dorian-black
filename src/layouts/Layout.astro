@@ -3,6 +3,7 @@ import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import CookieConsent from "../components/CookieConsent.astro";
 import { ANALYTICS_ID, GA_MEASUREMENT_ID, SITE_NAME, SITE_URL } from "../config/site";
+import { ALBUM } from "../data/album";
 
 interface Props {
 	title: string;
@@ -10,6 +11,7 @@ interface Props {
 	canonicalUrl: string;
 	socialImageUrl?: string;
 	socialImageAlt?: string;
+	ogType?: string;
 	robots?: string;
 	structuredData?: Record<string, unknown> | Record<string, unknown>[];
 	active?: "home" | "music" | "about" | "contact";
@@ -20,7 +22,8 @@ const {
 	description,
 	canonicalUrl,
 	socialImageUrl = `${SITE_URL}/og.png`,
-	socialImageAlt = `${SITE_NAME} — After Tonight album cover`,
+	socialImageAlt = `${SITE_NAME} logo beside the ${ALBUM.title} album cover`,
+	ogType = "website",
 	robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
 	structuredData,
 	active,
@@ -57,13 +60,17 @@ const showConsentBanner = GA_MEASUREMENT_ID !== null;
 		<link rel="canonical" href={canonicalUrl} />
 		<meta property="og:site_name" content={SITE_NAME} />
 		<meta property="og:locale" content="en_US" />
-		<meta property="og:type" content="website" />
+		<meta property="og:type" content={ogType} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:url" content={canonicalUrl} />
 		<meta property="og:image" content={socialImageUrl} />
+		<meta property="og:image:type" content="image/png" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
 		<meta property="og:image:alt" content={socialImageAlt} />
 		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:site" content="@dorianblackband" />
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:url" content={canonicalUrl} />

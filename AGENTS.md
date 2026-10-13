@@ -19,6 +19,8 @@ visual styling or copy.
 - Images live in `src/assets/` and go through `astro:assets` (`<Image>`), which
   emits WebP, `srcset`, and intrinsic width/height. Only files that must keep a
   fixed URL (`favicon.png`, `og.png`, `robots.txt`) belong in `public/`.
+  `public/og.png` (1200x630) is generated from the cover and logo in
+  `src/assets/` by `node scripts/build-og-image.mjs`; keep it ≤300 KB.
 - Icons via `astro-icon` + `@iconify-json/simple-icons` / `lucide`.
 - `@astrojs/sitemap` generates `sitemap-index.xml` at build time.
 - Deploy target: Cloudflare Worker `dorian-black` via `wrangler.toml`
