@@ -12,6 +12,8 @@ export const SITE_VERSION: string = pkg.version;
 export const SITE_URL = "https://dorianblack.com";
 export const SITE_NAME = "Dorian Black";
 export const SITE_TAGLINE = "Synth-pop from the city after dark.";
+/** The artist's genre, used in the JSON-LD graph (src/lib/schema.ts). */
+export const ARTIST_GENRE = "Synth-pop";
 
 /**
  * Cloudflare Turnstile site key for the contact form. The key is public by

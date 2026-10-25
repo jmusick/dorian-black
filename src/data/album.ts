@@ -21,6 +21,12 @@ export const ALBUM = {
 	status: "Out now",
 	year: 2026,
 	releaseDate: "2026-08-14" as string | null,
+	/**
+	 * PLACEHOLDER flag: `releaseDate` has not been confirmed against the release
+	 * record (README "Content status"). The JSON-LD graph omits `datePublished`
+	 * until this is set to true.
+	 */
+	releaseDateConfirmed: false as boolean,
 	/** Dedicated <meta name="description"> for the Music page (<=155 chars); do not reuse `blurb`. */
 	metaDescription:
 		"After Tonight, the synth-pop debut album by Dorian Black. Twelve tracks about the hours after last call. Stream it on Spotify.",
