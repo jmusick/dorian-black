@@ -1,7 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { ALBUM, TRACK_COUNT } from "../data/album";
-import { ACTIVE_SOCIALS, META_DESCRIPTIONS, SITE_NAME, SITE_URL } from "../config/site";
+import { ACTIVE_SOCIALS, META_DESCRIPTIONS, SITE_NAME, SITE_URL, SOCIAL_REL, socialLabel } from "../config/site";
 
 const canonicalUrl = `${SITE_URL}/about/`;
 
@@ -62,7 +62,7 @@ const structuredData = {
 				<h2 class="eyebrow">Elsewhere</h2>
 				<div class="hero-cta" style="margin-top: var(--space-4)">
 					{ACTIVE_SOCIALS.map((s) => (
-						<a class="btn btn-ghost" href={s.href} target="_blank" rel="noopener noreferrer">
+						<a class="btn btn-ghost" href={s.href} target="_blank" rel={SOCIAL_REL} aria-label={socialLabel(s)}>
 							{s.label}
 						</a>
 					))}

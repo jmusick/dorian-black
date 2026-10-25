@@ -3,7 +3,7 @@ import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import cover from "../assets/after-tonight-cover.png";
 import { ALBUM, ALBUM_RUNTIME, TRACK_COUNT, formatDuration } from "../data/album";
-import { ACTIVE_SOCIALS, SITE_NAME, SITE_URL } from "../config/site";
+import { ACTIVE_SOCIALS, SITE_NAME, SITE_URL, SOCIAL_REL, socialLabel } from "../config/site";
 
 const canonicalUrl = `${SITE_URL}/music/`;
 
@@ -60,7 +60,7 @@ const structuredData = {
 				{ACTIVE_SOCIALS.length > 0 ? (
 					<div class="hero-cta">
 						{ACTIVE_SOCIALS.map((s) => (
-							<a class="btn btn-secondary" href={s.href} target="_blank" rel="noopener noreferrer">
+							<a class="btn btn-secondary" href={s.href} target="_blank" rel={SOCIAL_REL} aria-label={socialLabel(s)}>
 								{s.label}
 							</a>
 						))}

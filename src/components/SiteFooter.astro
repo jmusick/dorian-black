@@ -1,6 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
-import { ACTIVE_SOCIALS, GA_MEASUREMENT_ID, SITE_NAME, SITE_VERSION } from "../config/site";
+import { ACTIVE_SOCIALS, SOCIAL_REL, socialLabel, GA_MEASUREMENT_ID, SITE_NAME, SITE_VERSION } from "../config/site";
 
 const year = new Date().getFullYear();
 ---
@@ -14,8 +14,8 @@ const year = new Date().getFullYear();
 				<a
 					href={s.href}
 					target="_blank"
-					rel="noopener noreferrer"
-					aria-label={s.label}
+					rel={SOCIAL_REL}
+					aria-label={socialLabel(s)}
 					class="social-link"
 				>
 					<Icon name={s.icon} aria-hidden="true" />
@@ -32,6 +32,6 @@ const year = new Date().getFullYear();
 				<button type="button" class="footer-link-button" data-cookie-preferences>Cookie choices</button>
 			</>
 		)}</span>
-		<span class="footer-credit">Site design by <a href="https://stonedragonmedia.com/" target="_blank" rel="noopener noreferrer">Stone Dragon Media, LLC</a></span>
+		<span class="footer-credit">Site design by <a href="https://stonedragonmedia.com/" target="_blank" rel="noopener noreferrer">Stone Dragon Media, LLC<span class="visually-hidden"> (opens in a new tab)</span></a></span>
 	</div>
 </footer>
