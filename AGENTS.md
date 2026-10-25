@@ -18,9 +18,11 @@ visual styling or copy.
   in [public/universal.css](public/universal.css).
 - Images live in `src/assets/` and go through `astro:assets` (`<Image>`), which
   emits WebP, `srcset`, and intrinsic width/height. Only files that must keep a
-  fixed URL (`favicon.png`, `og.png`, `robots.txt`) belong in `public/`.
-  `public/og.png` (1200x630) is generated from the cover and logo in
+  fixed URL (favicons, `site.webmanifest`, `og.png`, `robots.txt`) belong in
+  `public/`. `public/og.png` (1200x630) is generated from the cover and logo in
   `src/assets/` by `node scripts/build-og-image.mjs`; keep it ≤300 KB.
+  `favicon.ico`, `apple-touch-icon.png` and `icon-192/512.png` come from the
+  logo via `node scripts/build-icons.mjs`.
 - Icons via `astro-icon` + `@iconify-json/simple-icons` / `lucide`.
 - `@astrojs/sitemap` generates `sitemap-index.xml` at build time.
 - Deploy target: Cloudflare Worker `dorian-black` via `wrangler.toml`
