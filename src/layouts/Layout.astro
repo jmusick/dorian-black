@@ -4,6 +4,7 @@ import SiteFooter from "../components/SiteFooter.astro";
 import CookieConsent from "../components/CookieConsent.astro";
 import { ANALYTICS_ID, GA_MEASUREMENT_ID, SITE_NAME, SITE_URL } from "../config/site";
 import { ALBUM } from "../data/album";
+import { buildSchemaGraph } from "../lib/schema";
 
 interface Props {
 	title: string;
@@ -13,7 +14,8 @@ interface Props {
 	socialImageAlt?: string;
 	ogType?: string;
 	robots?: string;
-	structuredData?: Record<string, unknown> | Record<string, unknown>[];
+	/** Defaults to the site-wide graph (WebSite + artist) from src/lib/schema.ts. */
+	structuredData?: Record<string, unknown>;
 	active?: "home" | "music" | "about" | "contact";
 }
 
@@ -25,9 +27,12 @@ const {
 	socialImageAlt = `${SITE_NAME} logo beside the ${ALBUM.title} album cover`,
 	ogType = "website",
 	robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
-	structuredData,
+	structuredData = await buildSchemaGraph(),
 	active,
 } = Astro.props;
+
+/** Escape "<" so the JSON can never close its script element early. */
+const jsonLd = JSON.stringify(structuredData).replace(/</g, "\\u003c");
 
 /**
  * The banner renders wherever analytics is configured at all, so it stays
@@ -76,9 +81,7 @@ const showConsentBanner = GA_MEASUREMENT_ID !== null;
 		<meta name="twitter:url" content={canonicalUrl} />
 		<meta name="twitter:image" content={socialImageUrl} />
 		<meta name="twitter:image:alt" content={socialImageAlt} />
-		{structuredData && (
-			<script type="application/ld+json" set:html={JSON.stringify(structuredData)}></script>
-		)}
+		<script type="application/ld+json" set:html={jsonLd}></script>
 		<slot name="head" />
 	</head>
 	<body>

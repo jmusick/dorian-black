@@ -4,22 +4,11 @@ import Layout from "../layouts/Layout.astro";
 import cover from "../assets/after-tonight-cover.png";
 import { ALBUM, ALBUM_RUNTIME, TRACK_COUNT, formatDuration } from "../data/album";
 import { ACTIVE_SOCIALS, SITE_NAME, SITE_URL, SOCIAL_REL, socialLabel } from "../config/site";
+import { buildSchemaGraph } from "../lib/schema";
 
 const canonicalUrl = `${SITE_URL}/music/`;
 
-const structuredData = {
-	"@context": "https://schema.org",
-	"@type": "MusicAlbum",
-	name: ALBUM.title,
-	url: canonicalUrl,
-	numTracks: TRACK_COUNT,
-	byArtist: { "@type": "MusicGroup", name: SITE_NAME, url: SITE_URL },
-	track: ALBUM.tracks.map((t) => ({
-		"@type": "MusicRecording",
-		position: t.n,
-		name: t.title,
-	})),
-};
+const structuredData = await buildSchemaGraph({ album: true });
 ---
 
 <Layout

@@ -14,22 +14,12 @@ const bio = [
 	`The debut album, ${ALBUM.title}, runs ${TRACK_COUNT} tracks across a single night: the doors opening, the look across the room, the walk home, and the morning that doesn't care what happened.`,
 	`Neon synths, close vocals, and a drum machine that never quite lets up.`,
 ];
-
-const structuredData = {
-	"@context": "https://schema.org",
-	"@type": "MusicGroup",
-	name: SITE_NAME,
-	url: SITE_URL,
-	genre: "Synth-pop",
-	description: bio[0],
-};
 ---
 
 <Layout
 	title={`About ${SITE_NAME} — Synth-Pop Artist`}
 	description={META_DESCRIPTIONS.about}
 	canonicalUrl={canonicalUrl}
-	structuredData={structuredData}
 	active="about"
 >
 	<div class="page">

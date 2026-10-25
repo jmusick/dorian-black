@@ -4,23 +4,11 @@ import Layout from "../layouts/Layout.astro";
 import cover from "../assets/after-tonight-cover.png";
 import { ALBUM, ALBUM_RUNTIME, TRACK_COUNT } from "../data/album";
 import { META_DESCRIPTIONS, SITE_NAME, SITE_TAGLINE, SITE_URL } from "../config/site";
+import { buildSchemaGraph } from "../lib/schema";
 
 const canonicalUrl = `${SITE_URL}/`;
 
-const structuredData = {
-	"@context": "https://schema.org",
-	"@type": "MusicGroup",
-	name: SITE_NAME,
-	url: SITE_URL,
-	genre: "Synth-pop",
-	description: SITE_TAGLINE,
-	album: {
-		"@type": "MusicAlbum",
-		name: ALBUM.title,
-		numTracks: TRACK_COUNT,
-		byArtist: { "@type": "MusicGroup", name: SITE_NAME },
-	},
-};
+const structuredData = await buildSchemaGraph({ album: true });
 
 const spotifyAlbumId = ALBUM.spotifyUrl.match(/open\.spotify\.com\/album\/([A-Za-z0-9]+)/)?.[1];
 const spotifyEmbedUrl = `https://open.spotify.com/embed/album/${spotifyAlbumId}?utm_source=generator&theme=0`;
