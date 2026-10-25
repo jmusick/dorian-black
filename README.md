@@ -6,7 +6,7 @@ Built with [Astro](https://astro.build), deployed to [Cloudflare Workers](https:
 
 ## Visual style
 
-The site's visual language uses near-black backgrounds, magenta/violet/blue neon glow, and Audiowide/Rajdhani/Dancing Script type. Its design tokens and component styles live in [public/universal.css](public/universal.css).
+The site's visual language uses near-black backgrounds, magenta/violet/blue neon glow, and Audiowide/Rajdhani/Dancing Script type. Its design tokens and component styles live in [src/styles/universal.css](src/styles/universal.css).
 
 **Unresolved brand details:**
 - Fonts (Audiowide, Rajdhani, Dancing Script) are Google Fonts approximations, not confirmed brand fonts.

@@ -15,7 +15,9 @@ visual styling or copy.
 - **Astro 6** (static output), TypeScript, no UI framework — components are
   `.astro` files with inline `<style>`/`<script>`. Node `>=22.12.0`.
 - Styling is hand-written CSS. Design tokens and shared component styles live
-  in [public/universal.css](public/universal.css).
+  in [src/styles/universal.css](src/styles/universal.css), imported first in
+  `Layout.astro` so Astro bundles it into a hashed `/_astro/*.css` file. Its
+  `@font-face` rules point at the self-hosted woff2 files in `public/fonts/`.
 - Images live in `src/assets/` and go through `astro:assets` (`<Image>`), which
   emits WebP, `srcset`, and intrinsic width/height. Only files that must keep a
   fixed URL (favicons, `site.webmanifest`, `og.png`, `robots.txt`) belong in
@@ -163,6 +165,12 @@ Target WCAG 2.2 AA. Don't regress what already passes:
   `src/integrations/csp-headers.mjs` writes into `dist/_headers` on every
   build, so never hand-edit hashes. The CSP ships as `Report-Only` until it has
   been watched in production.
+- `public/_headers` also sets caching: `/_astro/*` (hashed) is immutable for a
+  year; fonts and the fixed-URL files in `public/` get one day plus
+  `stale-while-revalidate`; HTML keeps the platform default and revalidates.
+  A new fixed-URL file in `public/` needs its own rule there. Small page
+  `<style>` blocks are inlined by Astro (`inlineStylesheets: "auto"`), which
+  the CSP's `style-src 'unsafe-inline'` allows.
 - External `target="_blank"` links keep `rel="noopener noreferrer"`.
 - Client scripts write user-visible text with `textContent`, never
   `innerHTML`. `set:html` is only for static JSON-LD built from repo data.
@@ -197,6 +205,6 @@ Target WCAG 2.2 AA. Don't regress what already passes:
   reopens the banner. Same pattern as the SimonRook and Pneumaris sites.
 - Don't add a GA snippet to `<head>` directly — that would send data to Google
   before consent. Keep the Analytics section of `privacy-policy.astro` in sync.
-- Google Fonts are still loaded before consent via `@import` in
-  `universal.css`, which contradicts the banner's wording; self-hosting the
-  fonts is tracked in #4.
+- Fonts are self-hosted from `public/fonts/` (`@font-face` in
+  `src/styles/universal.css`), so nothing reaches Google before consent. Keep
+  it that way; don't reintroduce a Google Fonts `@import` or `<link>`.
