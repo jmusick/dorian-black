@@ -13,5 +13,5 @@ export default defineConfig({
 	server: {
 		port: 4321,
 	},
-	integrations: [icon(), sitemap(), cspHeaders()],
+	integrations: [icon(), sitemap({ filter: (p) => !p.includes('/privacy-policy') }), cspHeaders()],
 });

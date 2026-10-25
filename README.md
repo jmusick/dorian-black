@@ -92,6 +92,12 @@ Worker Builds connects to `jmusick/dorian-black`, production branch
 `master`, build command `npm run build`, deploy command `npx wrangler deploy`.
 Build variables and runtime secrets are separate in Workers.
 
+`public/_redirects` gives existing pages permanent (308) redirects to their
+canonical trailing-slash URLs, including `/index.html` aliases. Add aliases
+there when adding a page. These rules run in Static Assets, keeping
+`run_worker_first` limited to `/api/*`; `html_handling` retains its default
+`auto-trailing-slash` behavior for other paths (its built-in redirects are 307).
+
 DNS for `dorianblack.com` is managed in Cloudflare. The Worker owns the apex
 custom-domain record; the `www` → apex redirect and mail records are separate
 zone records. To roll back, restore an earlier version from the Worker's
