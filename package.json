@@ -1,7 +1,7 @@
 {
   "name": "dorian-black",
   "type": "module",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "engines": {
     "node": ">=22.12.0"
   },
@@ -25,5 +25,10 @@
     "@cloudflare/workers-types": "^5.20261021.1",
     "typescript": "^7.0.2",
     "wrangler": "^4.151.3"
+  },
+  "overrides": {
+    "miniflare": {
+      "undici": "^7.30.1"
+    }
   }
 }
