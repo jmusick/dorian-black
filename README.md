@@ -26,7 +26,8 @@ The site's visual language uses near-black backgrounds, magenta/violet/blue neon
   the release record before treating it as approved metadata.
 - Track order in `src/data/album.ts` is a proposed sequence, not a confirmed master order.
 
-The site has Home, Music, About, Contact, and Privacy Policy pages. The Music
+The site has Home, Music, About, Contact, and Privacy Policy pages, plus a
+branded 404 page. The Music
 page reads its track listing and WAV-derived durations from
 [src/data/album.ts](src/data/album.ts). Official streaming and social profile
 URLs are maintained in [src/config/site.ts](src/config/site.ts).
@@ -90,7 +91,13 @@ npm run deploy
 
 Worker Builds connects to `jmusick/dorian-black`, production branch
 `master`, build command `npm run build`, deploy command `npx wrangler deploy`.
-Build variables and runtime secrets are separate in Workers.
+Other branches (pull requests) run the preview command
+`npx wrangler versions upload --dry-run`, so PR checks build and validate the
+config but upload nothing; preview URLs stay off. The builder installs with
+npm 10.9.2. Build variables and runtime secrets are separate in Workers.
+
+Dependabot (`.github/dependabot.yml`) opens a weekly grouped PR for minor and
+patch npm updates.
 
 `public/_redirects` gives existing pages permanent (308) redirects to their
 canonical trailing-slash URLs, including `/index.html` aliases. Add aliases
@@ -181,18 +188,14 @@ before consent.
 ## Known issues and backlog
 
 A security, SEO, and accessibility audit on 2026-10-11 filed 25 GitHub issues,
-labelled by category and priority (`priority: P1` first, then P2, P3):
+labelled by category and priority (`p1` first, then `p2`, `p3`). Most are
+fixed; still open:
 
-- [Security](https://github.com/jmusick/dorian-black/issues?q=is%3Aissue+is%3Aopen+label%3Asecurity)
-  — dependency upgrade (Astro 7, npm audit), response headers/CSP, contact
-  endpoint rate limiting and hardening, workers.dev exposure, pre-consent
-  Google Fonts.
-- [SEO](https://github.com/jmusick/dorian-black/issues?q=is%3Aissue+is%3Aopen+label%3Aseo)
-  — 404 page, linked JSON-LD, titles/descriptions, share image, favicons,
-  caching and LCP, content depth.
-- [Accessibility](https://github.com/jmusick/dorian-black/issues?q=is%3Aissue+is%3Aopen+label%3Aaccessibility)
-  — link underlines, muted-text and input-border contrast, cookie banner
-  overlap and focus, mobile menu focus order, form errors, tracklist semantics.
+- [#2 security response headers](https://github.com/jmusick/dorian-black/issues/2)
+  (P2) — the headers are in place, but the CSP still ships as `Report-Only`
+  until it has been watched in production.
+- [#13 programmatic contact form errors](https://github.com/jmusick/dorian-black/issues/13) (P3).
+- [#23 thin content and keyword headings](https://github.com/jmusick/dorian-black/issues/23) (P3).
+- [#25 oversized source images in `src/assets`](https://github.com/jmusick/dorian-black/issues/25) (P3).
 
-Highest priority: [#1 Astro / npm audit upgrade](https://github.com/jmusick/dorian-black/issues/1)
-and [#7 underline inline links](https://github.com/jmusick/dorian-black/issues/7).
+See [all open issues](https://github.com/jmusick/dorian-black/issues).

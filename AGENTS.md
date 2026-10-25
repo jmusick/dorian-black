@@ -12,7 +12,7 @@ visual styling or copy.
 
 ## Stack
 
-- **Astro 6** (static output), TypeScript, no UI framework — components are
+- **Astro 7** (static output), TypeScript, no UI framework — components are
   `.astro` files with inline `<style>`/`<script>`. Node `>=22.12.0`.
 - Styling is hand-written CSS. Design tokens and shared component styles live
   in [src/styles/universal.css](src/styles/universal.css), imported first in
@@ -29,11 +29,16 @@ visual styling or copy.
 - `@astrojs/sitemap` generates `sitemap-index.xml` at build time.
 - Deploy target: Cloudflare Worker `dorian-black` via `wrangler.toml`
   (`npm run deploy`, or Workers Builds on push to `master`).
+- Workers Builds installs with npm 10.9.2 (`npm ci`), which ignores nested
+  `overrides` and then rejects the lockfile. `package.json` overrides use the
+  version-selector form (`"undici@7": "^7.30.1"` lifts miniflare's undici for
+  Dependabot alert #5; drop it once wrangler ships undici ≥ 7.30.1). After
+  touching overrides or the lockfile, check `npx -y npm@10.9.2 ci` passes.
 
 ## Structure
 
 - `src/pages/` — routes (`index.astro`, `about.astro`, `music.astro`,
-  `contact.astro`, `privacy-policy.astro`). Each page passes `title`,
+  `contact.astro`, `privacy-policy.astro`, `404.astro`). Each page passes `title`,
   `description`, `canonicalUrl`, and optional `robots` / `structuredData` /
   social-image props to the layout.
 - `src/layouts/Layout.astro` — shared page shell: `<head>` metadata (canonical,
@@ -49,6 +54,10 @@ visual styling or copy.
 - `src/data/album.ts` — album/track data (`After Tonight`). Track order,
   durations, and release date here are the single source for the Music page;
   don't hardcode track info in components.
+- `src/lib/schema.ts` — builds the site's linked JSON-LD `@graph` from
+  `site.ts` / `album.ts`; `Layout.astro` uses it by default.
+- `src/integrations/csp-headers.mjs` — build integration that writes inline
+  script hashes into `dist/_headers`.
 - `worker/index.ts` — Worker routing: `/api/contact` goes to the handler,
   everything else to the `ASSETS` binding.
 - `worker/contact.ts` — the only server-side endpoint. It validates Contact
@@ -74,7 +83,9 @@ starting it.
 
 No test suite or linter is configured. Verify changes with `npm run build`
 and, for anything visual, `npm run dev` + a browser check (desktop and a
-320px-wide viewport).
+320px-wide viewport). After a build, `node scripts/check-seo.mjs` prints each
+page's title and description length and exits non-zero if a description is
+missing or over 155 characters.
 
 ## Issue tracker and backlog
 
@@ -82,7 +93,7 @@ Work is tracked in GitHub issues on `jmusick/dorian-black`. A security, SEO,
 and accessibility audit on 2026-10-11 filed issues #1–#25.
 
 - Labels: one or more categories (`security`, `seo`, `accessibility`) plus one
-  priority (`priority: P1` fix first, `priority: P2`, `priority: P3` polish).
+  priority (`p1` fix first, `p2`, `p3` polish).
 - Before changing an area, check for an open issue that covers it
   (`gh issue list --label <category>`) and follow its checklist rather than
   redesigning the fix. Several issues share files (`public/_headers`,
