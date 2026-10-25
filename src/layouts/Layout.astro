@@ -1,4 +1,7 @@
 ---
+// Imported first so the shared tokens and base styles come before component
+// styles in the bundle, the same cascade order as the old <link>.
+import "../styles/universal.css";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import CookieConsent from "../components/CookieConsent.astro";
@@ -57,7 +60,6 @@ const showConsentBanner = GA_MEASUREMENT_ID !== null;
 			type="font/woff2"
 			crossorigin
 		/>
-		<link rel="stylesheet" href="/universal.css" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 		<meta name="description" content={description} />
