@@ -1,0 +1,25 @@
+# Permanent canonical URLs, handled by Static Assets before its default 307s.
+# Keep these explicit so API routes, assets, and unknown paths are unaffected.
+# Add the same aliases here when adding a directory-output page.
+/index / 308
+/index.html / 308
+
+/about /about/ 308
+/about.html /about/ 308
+/about/index /about/ 308
+/about/index.html /about/ 308
+
+/contact /contact/ 308
+/contact.html /contact/ 308
+/contact/index /contact/ 308
+/contact/index.html /contact/ 308
+
+/music /music/ 308
+/music.html /music/ 308
+/music/index /music/ 308
+/music/index.html /music/ 308
+
+/privacy-policy /privacy-policy/ 308
+/privacy-policy.html /privacy-policy/ 308
+/privacy-policy/index /privacy-policy/ 308
+/privacy-policy/index.html /privacy-policy/ 308
