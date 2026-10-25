@@ -79,6 +79,21 @@ export const SOCIALS: SocialLink[] = [
 	{ label: "X", href: "https://x.com/dorianblackband", icon: "simple-icons:x" },
 ];
 
+/** Appended (visually hidden or in an aria-label) to every link that opens a new tab. */
+export const NEW_TAB_HINT = "(opens in a new tab)";
+
+/** Accessible name for a profile link, e.g. "Dorian Black on Spotify (opens in a new tab)". */
+export function socialLabel(s: SocialLink): string {
+	return `${SITE_NAME} on ${s.label} ${NEW_TAB_HINT}`;
+}
+
+/**
+ * rel for the artist's own profile links: `me` declares identity (all SOCIALS
+ * are the artist's own profiles); noopener/noreferrer are required for
+ * target="_blank".
+ */
+export const SOCIAL_REL = "me noopener noreferrer";
+
 export const ACTIVE_SOCIALS = SOCIALS.filter(
 	(s): s is SocialLink & { href: string } => s.href !== null,
 );

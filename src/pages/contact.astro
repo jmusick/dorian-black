@@ -7,6 +7,8 @@ import {
 	META_DESCRIPTIONS,
 	SITE_NAME,
 	SITE_URL,
+	SOCIAL_REL,
+	socialLabel,
 	TURNSTILE_SITE_KEY,
 } from "../config/site";
 
@@ -142,8 +144,8 @@ const functionUnavailable = import.meta.env.DEV;
 						<a
 							href={social.href}
 							target="_blank"
-							rel="noopener noreferrer"
-							aria-label={social.label}
+							rel={SOCIAL_REL}
+							aria-label={socialLabel(social)}
 							class="social-link"
 						>
 							<Icon name={social.icon} aria-hidden="true" />
