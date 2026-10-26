@@ -9,7 +9,8 @@ const walk = (dir) =>
 		const p = join(dir, f);
 		return statSync(p).isDirectory() ? walk(p) : p.endsWith(".html") ? [p] : [];
 	});
-const decode = (s) => s.replace(/&amp;/g, "&").replace(/&#39;|&#x27;/g, "'").replace(/&quot;/g, '"');
+// &amp; goes last so "&amp;quot;" decodes to "&quot;", not '"'.
+const decode = (s) => s.replace(/&#39;|&#x27;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, "&");
 
 let bad = 0;
 for (const file of walk("dist")) {
