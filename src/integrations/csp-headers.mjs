@@ -26,9 +26,10 @@ export default function cspHeaders() {
 				const hashes = new Set();
 				for (const file of walk(outDir)) {
 					const html = readFileSync(file, "utf8");
-					for (const [, attrs, body] of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)) {
-						if (/\ssrc=/.test(attrs)) continue;
-						const type = attrs.match(/\stype="([^"]*)"/)?.[1];
+					// HTML tag names are case-insensitive and an end tag may carry whitespace.
+					for (const [, attrs, body] of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\b[^>]*>/gi)) {
+						if (/\ssrc=/i.test(attrs)) continue;
+						const type = attrs.match(/\stype="([^"]*)"/i)?.[1]?.toLowerCase();
 						if (type && NON_SCRIPT_TYPES.has(type)) continue;
 						hashes.add(`'sha256-${createHash("sha256").update(body, "utf8").digest("base64")}'`);
 					}
