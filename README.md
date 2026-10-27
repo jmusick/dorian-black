@@ -212,9 +212,6 @@ A security, SEO, and accessibility audit on 2026-10-11 filed 25 GitHub issues,
 labelled by category and priority (`p1` first, then `p2`, `p3`). Most are
 fixed; still open:
 
-- [#2 security response headers](https://github.com/jmusick/dorian-black/issues/2)
-  (P2) — the headers are in place, but the CSP still ships as `Report-Only`
-  until it has been watched in production.
 - [#13 programmatic contact form errors](https://github.com/jmusick/dorian-black/issues/13) (P3).
 - [#23 thin content and keyword headings](https://github.com/jmusick/dorian-black/issues/23) (P3).
 - [#25 oversized source images in `src/assets`](https://github.com/jmusick/dorian-black/issues/25) (P3).

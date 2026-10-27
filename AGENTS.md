@@ -191,8 +191,10 @@ Target WCAG 2.2 AA. Don't regress what already passes:
   third party before consent — the cookie banner wording (#4).
 - Inline `<script>`s are allowed by sha256 hash, which
   `src/integrations/csp-headers.mjs` writes into `dist/_headers` on every
-  build, so never hand-edit hashes. The CSP ships as `Report-Only` until it has
-  been watched in production.
+  build, so never hand-edit hashes. The CSP is enforced. Cloudflare Web
+  Analytics is injected by the zone at the edge (`static.cloudflareinsights.com`
+  is allowed in `script-src`), so check the live console for violations after
+  changing the policy.
 - `public/_headers` also sets caching: `/_astro/*` (hashed) is immutable for a
   year; fonts and the fixed-URL files in `public/` get one day plus
   `stale-while-revalidate`; HTML keeps the platform default and revalidates.
