@@ -77,8 +77,14 @@ Requires Node `>=22.12.0`.
 npm install
 npm run dev                                  # static pages only
 npm run build
+npm run check                               # type check (astro sync + tsc --noEmit)
 npm run dev:worker                          # includes /api/contact on :8787
 ```
+
+GitHub Actions (`.github/workflows/ci.yml`) runs the shared
+[jmusick/ci](https://github.com/jmusick/ci) checks on every pull request and
+push to `main`: secret scan, dependency audit, type check, build, and
+`scripts/check-seo.mjs`. See [AGENTS.md](AGENTS.md#ci) for details.
 
 ## Build
 

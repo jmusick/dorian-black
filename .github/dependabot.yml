@@ -8,3 +8,13 @@ updates:
     groups:
       minor-and-patch:
         update-types: [minor, patch]
+
+  # Keeps SHA-pinned actions current, including the jmusick/ci shared workflows.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 3
+    groups:
+      actions:
+        patterns: ["*"]

@@ -1,7 +1,7 @@
 {
   "name": "dorian-black",
   "type": "module",
-  "version": "1.9.1",
+  "version": "1.9.2",
   "engines": {
     "node": ">=22.12.0"
   },
@@ -12,7 +12,8 @@
     "dev:worker": "npm run build && wrangler dev",
     "deploy": "npm run build && wrangler deploy",
     "types:worker": "wrangler types --include-runtime=false",
-    "astro": "astro"
+    "astro": "astro",
+    "check": "astro sync && tsc --noEmit"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
