@@ -1,6 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { ALBUM, TRACK_COUNT } from "../data/album";
+import { AFTER_TONIGHT, LATEST, formatReleaseDate, isReleased } from "../data/album";
 import { ACTIVE_SOCIALS, META_DESCRIPTIONS, SITE_NAME, SITE_URL, SOCIAL_REL, socialLabel } from "../config/site";
 
 const canonicalUrl = `${SITE_URL}/about/`;
@@ -11,7 +11,8 @@ const canonicalUrl = `${SITE_URL}/about/`;
  */
 const bio = [
 	`${SITE_NAME} makes synth-pop for the hours most records sleep through — the stretch between last call and first light, when a city is at its loudest and its loneliest at the same time.`,
-	`The debut album, ${ALBUM.title}, runs ${TRACK_COUNT} tracks across a single night: the doors opening, the look across the room, the walk home, and the morning that doesn't care what happened.`,
+	`The debut album, ${AFTER_TONIGHT.title}, runs ${AFTER_TONIGHT.tracks.length} tracks across a single night: the doors opening, the look across the room, the walk home, and the morning that doesn't care what happened.`,
+	`${LATEST.title}, ${isReleased(LATEST) ? "the second album" : `the second album, out ${formatReleaseDate(LATEST)}`}, follows what happens once the night turns into a life: kitchen dances, late phone calls, and the person who saves you a seat.`,
 	`Neon synths, close vocals, and a drum machine that never quite lets up.`,
 ];
 ---

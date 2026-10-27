@@ -6,7 +6,7 @@ import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import CookieConsent from "../components/CookieConsent.astro";
 import { ANALYTICS_ID, GA_MEASUREMENT_ID, SITE_NAME, SITE_URL } from "../config/site";
-import { ALBUM } from "../data/album";
+import { LATEST } from "../data/album";
 import { buildSchemaGraph } from "../lib/schema";
 
 interface Props {
@@ -27,7 +27,7 @@ const {
 	description,
 	canonicalUrl,
 	socialImageUrl = `${SITE_URL}/og.png`,
-	socialImageAlt = `${SITE_NAME} logo beside the ${ALBUM.title} album cover`,
+	socialImageAlt = `${LATEST.title}, the album by ${SITE_NAME}: cover art`,
 	ogType = "website",
 	robots = "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
 	structuredData = await buildSchemaGraph(),

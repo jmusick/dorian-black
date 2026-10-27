@@ -1,9 +1,11 @@
 /**
- * "After Tonight" — the debut album.
+ * Dorian Black's releases, newest first. Track order, durations, and release
+ * dates here are the single source for the Home and Music pages and the
+ * JSON-LD graph; don't hardcode track info in components.
  *
- * Track order is a proposed sequence, not a confirmed master order; durations
- * are read from the source WAVs in the project assets folder. Adjust `tracks`
- * here and the Music page follows.
+ * Durations are read from the source WAVs in the project assets folder.
+ * Cover images live in src/assets and are mapped by slug in
+ * src/data/covers.ts, so this file stays free of asset imports.
  */
 
 export interface Track {
@@ -15,24 +17,69 @@ export interface Track {
 	note: string;
 }
 
-export const ALBUM = {
+export interface Release {
+	/** URL fragment on the Music page and key into src/data/covers.ts. */
+	slug: "second-nature" | "after-tonight";
+	title: string;
+	kind: string;
+	releaseDate: string;
+	/**
+	 * Whether `releaseDate` has been checked against the distributor's release
+	 * record. The JSON-LD graph omits `datePublished` until it is.
+	 */
+	releaseDateConfirmed: boolean;
+	blurb: string;
+	/** Spotify album page; null until the stores publish it. */
+	spotifyUrl: string | null;
+	/** DistroKid HyperFollow page: pre-save before release, store links after. */
+	hyperfollowUrl: string | null;
+	tracks: Track[];
+}
+
+export const SECOND_NATURE: Release = {
+	slug: "second-nature",
+	title: "Second Nature",
+	kind: "Album",
+	// Confirmed on the DistroKid release and HyperFollow page, 2026-10-27.
+	releaseDate: "2026-11-06",
+	releaseDateConfirmed: true,
+	// DRAFT copy written from the lyrics, not approved artist copy (README "Content status").
+	blurb:
+		"Twelve songs about the love that outlasts last call: kitchen dances, the nine o'clock phone call, and the person still saving you the booth by the window.",
+	spotifyUrl: null,
+	hyperfollowUrl: "https://distrokid.com/hyperfollow/dorianblack2/second-nature",
+	// Sequence from the DistroKid release. Notes are DRAFT copy drawn from the lyrics.
+	tracks: [
+		{ n: 1, title: "Same Name", duration: "3:50", note: "Off the wall when the bass comes in." },
+		{ n: 2, title: "More Than I Asked For", duration: "4:00", note: "Folding sheets, missing the same note." },
+		{ n: 3, title: "Leave the Light On", duration: "3:43", note: "Amber lamp, turned back up." },
+		{ n: 4, title: "Nothing to Recover From", duration: "4:22", note: "The nine o'clock call." },
+		{ n: 5, title: "We Came to Make a Scene", duration: "3:31", note: "The quiet one steals the show." },
+		{ n: 6, title: "Strangers on Purpose", duration: "3:40", note: "Meeting again, like the first time." },
+		{ n: 7, title: "All My Best Lines", duration: "3:29", note: "Asking for a lighter a year after quitting." },
+		{ n: 8, title: "Stay Right There", duration: "3:25", note: "Speakers up, drinks untouched." },
+		{ n: 9, title: "You Make Me Late", duration: "3:23", note: "Keys in hand, still at the door." },
+		{ n: 10, title: "Do That Again", duration: "3:22", note: "Seven out of ten." },
+		{ n: 11, title: "Used to Be Ours", duration: "3:31", note: "The old club, now a waiting room." },
+		{ n: 12, title: "Let's Wake the City", duration: "4:12", note: "The booth by the diner window." },
+	],
+};
+
+export const AFTER_TONIGHT: Release = {
+	slug: "after-tonight",
 	title: "After Tonight",
 	kind: "Album",
-	status: "Out now",
-	year: 2026,
-	releaseDate: "2026-08-14" as string | null,
+	releaseDate: "2026-08-14",
 	/**
-	 * PLACEHOLDER flag: `releaseDate` has not been confirmed against the release
-	 * record (README "Content status"). The JSON-LD graph omits `datePublished`
-	 * until this is set to true.
+	 * PLACEHOLDER flag: this date has not been confirmed against the release
+	 * record (README "Content status").
 	 */
-	releaseDateConfirmed: false as boolean,
-	/** Dedicated <meta name="description"> for the Music page (<=155 chars); do not reuse `blurb`. */
-	metaDescription:
-		"After Tonight, the synth-pop debut album by Dorian Black. Twelve tracks about the hours after last call. Stream it on Spotify.",
+	releaseDateConfirmed: false,
 	blurb:
 		"Twelve songs about the hours between last call and sunrise — crowded rooms, reckless attraction, and the quiet that arrives when the party finally ends.",
 	spotifyUrl: "https://open.spotify.com/album/1b10wj76W5exnmt1wkNlbW",
+	hyperfollowUrl: null,
+	// Proposed sequence, not a confirmed master order.
 	tracks: [
 		{ n: 1, title: "Everybody Wants Tonight", duration: "4:23", note: "The doors open." },
 		{ n: 2, title: "Bad Idea, Good Time", duration: "3:36", note: "Knowing better, going anyway." },
@@ -46,10 +93,39 @@ export const ALBUM = {
 		{ n: 10, title: "Neon Funeral", duration: "3:55", note: "Lights coming up." },
 		{ n: 11, title: "No Good Goodbye", duration: "4:28", note: "The parking lot." },
 		{ n: 12, title: "The Morning Doesn't Care", duration: "5:05", note: "Sunrise, unmoved." },
-	] satisfies Track[],
-} as const;
+	],
+};
 
-export const TRACK_COUNT = ALBUM.tracks.length;
+/** Newest first. */
+export const RELEASES: Release[] = [SECOND_NATURE, AFTER_TONIGHT];
+
+/** The release the Home page leads with. */
+export const LATEST = SECOND_NATURE;
+
+/**
+ * Whether a release is out as of the build. The site is static, so pages
+ * switch from pre-release to "out now" copy on the first build on or after
+ * the release date (any push to master, or `npm run deploy`).
+ */
+export function isReleased(release: Release, now = new Date()): boolean {
+	return now >= new Date(`${release.releaseDate}T00:00:00`);
+}
+
+/** "November 6, 2026" */
+export function formatReleaseDate(release: Release): string {
+	return new Date(`${release.releaseDate}T00:00:00`).toLocaleDateString("en-US", {
+		year: "numeric",
+		month: "long",
+		day: "numeric",
+	});
+}
+
+/** "Out now" or "Out November 6". */
+export function releaseStatus(release: Release): string {
+	if (isReleased(release)) return "Out now";
+	const date = new Date(`${release.releaseDate}T00:00:00`);
+	return `Out ${date.toLocaleDateString("en-US", { month: "long", day: "numeric" })}`;
+}
 
 /**
  * Parses an "m:ss" duration into an ISO 8601 duration (for `<time datetime>`)
@@ -66,12 +142,12 @@ export function formatDuration(duration: string): { iso: string; spoken: string 
 }
 
 /** Total runtime, formatted as "Nh Nm" / "Nm". */
-export const ALBUM_RUNTIME = (() => {
-	const seconds = ALBUM.tracks.reduce((total, track) => {
+export function releaseRuntime(release: Release): string {
+	const seconds = release.tracks.reduce((total, track) => {
 		const [m, s] = track.duration.split(":").map(Number);
 		return total + m * 60 + s;
 	}, 0);
 	const hours = Math.floor(seconds / 3600);
 	const minutes = Math.round((seconds % 3600) / 60);
 	return hours ? `${hours}h ${minutes}m` : `${minutes}m`;
-})();
+}

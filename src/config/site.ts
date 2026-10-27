@@ -1,5 +1,5 @@
 import pkg from "../../package.json";
-import { ALBUM, TRACK_COUNT } from "../data/album";
+import { AFTER_TONIGHT, LATEST, formatReleaseDate, isReleased } from "../data/album";
 
 /** Sourced from package.json — bump the version there (and tag the release to match) to update this everywhere. */
 export const SITE_VERSION: string = pkg.version;
@@ -48,21 +48,22 @@ export const ANALYTICS_ID: string | null = import.meta.env.PROD ? GA_MEASUREMENT
 /**
  * Social and streaming profiles.
  *
- * Nothing is released yet, so every entry is `href: null`. The header and
- * footer skip null entries entirely, so the site renders clean today and
- * lights up the moment a URL is pasted in.
+ * Entries with `href: null` are skipped by the header, footer, and Music
+ * page, so a profile lights up the moment its URL is pasted in.
  */
 export interface SocialLink {
 	label: string;
 	href: string | null;
 	icon: string;
+	/** A store profile (where the music plays), as opposed to a social account. */
+	streaming?: boolean;
 }
 
 export const SOCIALS: SocialLink[] = [
-	{ label: "Spotify", href: "https://open.spotify.com/artist/1e0DxuIekYHipCZlcNwVVt", icon: "simple-icons:spotify" },
-	{ label: "Apple Music", href: "https://music.apple.com/us/artist/dorian-black/6801309828", icon: "simple-icons:applemusic" },
-	{ label: "YouTube", href: null, icon: "simple-icons:youtube" },
-	{ label: "SoundCloud", href: null, icon: "simple-icons:soundcloud" },
+	{ label: "Spotify", href: "https://open.spotify.com/artist/1e0DxuIekYHipCZlcNwVVt", icon: "simple-icons:spotify", streaming: true },
+	{ label: "Apple Music", href: "https://music.apple.com/us/artist/dorian-black/6801309828", icon: "simple-icons:applemusic", streaming: true },
+	{ label: "YouTube", href: null, icon: "simple-icons:youtube", streaming: true },
+	{ label: "SoundCloud", href: null, icon: "simple-icons:soundcloud", streaming: true },
 	{
 		label: "Instagram",
 		href: "https://www.instagram.com/dorian.black.music/",
@@ -107,13 +108,15 @@ export const CONTACT_EMAIL = "hello@dorianblack.com";
  * Dedicated meta descriptions (<=155 chars each; scripts/check-seo.mjs checks
  * the built output). Kept separate from on-page copy so search snippets can be
  * tuned without touching the page. Built only from facts already in the repo:
- * artist name, synth-pop genre, album name and track count. The Music page's
- * description lives on ALBUM.metaDescription in src/data/album.ts.
+ * artist name, synth-pop genre, album names and release dates.
  */
+const LATEST_WHEN = isReleased(LATEST) ? "out now" : `out ${formatReleaseDate(LATEST)}`;
+
 export const META_DESCRIPTIONS = {
-	home: `${SITE_NAME} is a synth-pop artist. Hear the debut album ${ALBUM.title}, ${TRACK_COUNT} songs for the hours between last call and sunrise.`,
+	home: `${SITE_NAME} is a synth-pop artist. The new album ${LATEST.title} is ${LATEST_WHEN}; the debut, ${AFTER_TONIGHT.title}, is streaming now.`,
+	music: `Music by ${SITE_NAME}: the synth-pop albums ${LATEST.title} (${LATEST_WHEN}) and ${AFTER_TONIGHT.title}. Tracklists, pre-save and streaming links.`,
 	// PLACEHOLDER: deliberately generic until approved bio copy exists. Do not add biography facts here.
-	about: `About ${SITE_NAME}, a synth-pop artist, and the debut album ${ALBUM.title}.`,
+	about: `About ${SITE_NAME}, a synth-pop artist, and the albums ${LATEST.title} and ${AFTER_TONIGHT.title}.`,
 	contact: `Contact ${SITE_NAME} for booking, press, licensing, collaborations, and general enquiries.`,
 	privacy: `How the ${SITE_NAME} website handles contact-form messages, optional analytics cookies, and your privacy choices.`,
 } as const;

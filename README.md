@@ -1,6 +1,7 @@
 # Dorian Black
 
-Website for Dorian Black, a synth-pop recording artist. Debut album: **After Tonight** (12 tracks).
+Website for Dorian Black, a synth-pop recording artist. Albums: **Second Nature**
+(12 tracks, out 2026-11-06) and the debut **After Tonight** (12 tracks).
 
 Built with [Astro](https://astro.build), deployed to [Cloudflare Workers](https://workers.cloudflare.com/). Stack and structure mirror the [Pneumaris](https://pneumarisband.com) site.
 
@@ -21,15 +22,28 @@ The site's visual language uses near-black backgrounds, magenta/violet/blue neon
   until filled in).
 - The Contact page, Turnstile widget, and Email Sending handler are configured;
   production requires encrypted Worker secrets for the API token and Turnstile.
-- `src/data/album.ts` `ALBUM.releaseDate` currently contains `2026-08-14`.
-  Earlier documentation treated that date as unconfirmed; confirm it against
-  the release record before treating it as approved metadata.
-- Track order in `src/data/album.ts` is a proposed sequence, not a confirmed master order.
+- `src/data/album.ts` holds both releases. Second Nature's sequence and
+  release date (2026-11-06) come from the DistroKid release; its pre-save
+  button links the DistroKid HyperFollow page.
+- Second Nature's `blurb`, its track notes, and the About page sentence about
+  it are draft copy written from the lyrics, not approved artist copy.
+- The Second Nature cover is the 3000 x 3000 JPEG uploaded to DistroKid
+  (`assets/concepts/second-nature/second-nature-broken-glass-straight-torso-3000x3000.jpg`
+  in the project library), resized to 1400 px in `src/assets/`.
+- The site is static, so Second Nature switches from "Out November 6" and
+  "Pre-save" to "Out now" and "Listen" on the first build on or after the
+  release date. Rebuild on release day and fill in `SECOND_NATURE.spotifyUrl`
+  once the Spotify album page exists.
+- After Tonight's `releaseDate` (`2026-08-14`) is unconfirmed; confirm it
+  against the release record before treating it as approved metadata. Its
+  track order is a proposed sequence, not a confirmed master order.
 
 The site has Home, Music, About, Contact, and Privacy Policy pages, plus a
-branded 404 page. The Music
-page reads its track listing and WAV-derived durations from
-[src/data/album.ts](src/data/album.ts). Official streaming and social profile
+branded 404 page. Home leads with the latest release (`LATEST`) and keeps the
+After Tonight Spotify player; the Music page lists every release with its
+tracklist. Track listings and WAV-derived durations come from
+[src/data/album.ts](src/data/album.ts); cover art is mapped by slug in
+[src/data/covers.ts](src/data/covers.ts). Official streaming and social profile
 URLs are maintained in [src/config/site.ts](src/config/site.ts).
 
 ## Workspace and documentation
@@ -46,7 +60,7 @@ by the site in `public/`. The project library uses lowercase kebab-case folders:
 - `assets/brand/` — approved logo masters.
 - `assets/albums/after-tonight/` — original WAVs, approved cover, and individual
   song `.txt` files in `lyrics/`.
-- `assets/albums/second-nature/lyrics/` — working song text for the next album.
+- `assets/albums/second-nature/` — WAVs and working song text for Second Nature.
 - `assets/social/` — campaign masters and platform upload copies.
 - `assets/concepts/` — exploratory artwork.
 - `sources/` — historical drafts, exports, recovery provenance, and backups.
@@ -182,8 +196,10 @@ only after acceptance. Analytics is disabled in `astro dev`; the footer's
 [the privacy policy](src/pages/privacy-policy.astro) aligned with this behavior.
 
 Fonts are self-hosted (latin woff2 in `public/fonts/`, OFL licenses alongside),
-and the Spotify player loads only after a click, so nothing reaches Google
-before consent.
+so nothing reaches Google before consent. The home page's Spotify player loads
+automatically for visitors who accepted the banner (CookieConsent sets
+`data-consent="granted"` on `<html>` and fires a `db:consent` event); everyone
+else gets a click-to-load button and nothing reaches Spotify until they click.
 
 ## Known issues and backlog
 

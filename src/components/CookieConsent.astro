@@ -1,6 +1,6 @@
 ---
 /**
- * Cookie consent banner for Google Analytics.
+ * Cookie consent banner for Google Analytics and the home page's Spotify player.
  *
  * Opt-in, and strictly so: gtag.js is not fetched at all until the visitor
  * accepts. A banner that loads the tag first and asks second still discloses the
@@ -9,6 +9,10 @@
  *
  * The choice lives in localStorage, not a cookie, so recording "no" doesn't
  * itself store anything a consent regime would object to.
+ *
+ * The choice is also published for other scripts: `data-consent="granted"` on
+ * <html> once consent is given (stored or just now), plus a `db:consent` event
+ * carrying the choice. The home page loads its Spotify player from these.
  *
  * `measurementId` is null in dev (see ANALYTICS_ID in src/config/site.ts): the
  * banner still renders and behaves normally, it just has nothing to load.
@@ -29,11 +33,12 @@ const { measurementId } = Astro.props;
 >
 	<div class="cc-inner">
 		<div class="cc-text">
-			<p class="cc-title">Analytics</p>
+			<p class="cc-title">Cookies</p>
 			<p class="cc-body">
-				This site would like to count visits with Google Analytics, which sets cookies.
-				Nothing is sent to Google unless you accept, and the site works the same either
-				way. See the <a href="/privacy-policy/">privacy policy</a>.
+				This site would like to count visits with Google Analytics and load the Spotify
+				player on the home page, both of which set cookies. Nothing is sent to Google or
+				Spotify unless you accept; if you decline, the player still loads with one click.
+				See the <a href="/privacy-policy/">privacy policy</a>.
 			</p>
 		</div>
 		<div class="cc-actions">
@@ -131,6 +136,12 @@ const { measurementId } = Astro.props;
 			target.focus();
 		}
 
+		/** Let other scripts (the Spotify player) act on consent without reading storage. */
+		function announce(choice) {
+			if (choice === "granted") root.setAttribute("data-consent", "granted");
+			document.dispatchEvent(new CustomEvent("db:consent", { detail: choice }));
+		}
+
 		function record(choice) {
 			var wasGranted = stored === "granted";
 			stored = choice;
@@ -140,6 +151,7 @@ const { measurementId } = Astro.props;
 				// Choice won't persist, but honour it for this page view.
 			}
 			dismiss();
+			announce(choice);
 
 			if (choice === "granted") {
 				loadAnalytics();
@@ -150,6 +162,7 @@ const { measurementId } = Astro.props;
 		}
 
 		if (stored === "granted") {
+			announce("granted");
 			loadAnalytics();
 		} else if (stored !== "denied") {
 			show();

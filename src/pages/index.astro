@@ -1,22 +1,35 @@
 ---
 import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
-import cover from "../assets/after-tonight-cover.png";
-import { ALBUM, ALBUM_RUNTIME, TRACK_COUNT } from "../data/album";
-import { META_DESCRIPTIONS, SITE_NAME, SITE_TAGLINE, SITE_URL } from "../config/site";
+import { AFTER_TONIGHT, LATEST, formatDuration, isReleased, releaseRuntime } from "../data/album";
+import { COVERS } from "../data/covers";
+import { META_DESCRIPTIONS, NEW_TAB_HINT, SITE_NAME, SITE_URL } from "../config/site";
 import { buildSchemaGraph } from "../lib/schema";
 
 const canonicalUrl = `${SITE_URL}/`;
 
 const structuredData = await buildSchemaGraph({ album: true });
 
-const spotifyAlbumId = ALBUM.spotifyUrl.match(/open\.spotify\.com\/album\/([A-Za-z0-9]+)/)?.[1];
+const latestCover = COVERS[LATEST.slug];
+const latestOut = isReleased(LATEST);
+const latestDay = new Date(`${LATEST.releaseDate}T00:00:00`).toLocaleDateString("en-US", {
+	weekday: "long",
+	month: "long",
+	day: "numeric",
+});
+// Before release the HyperFollow page is a Spotify pre-save; after, it lists
+// every store until the Spotify album URL is filled in.
+const latestListenUrl = latestOut ? (LATEST.spotifyUrl ?? LATEST.hyperfollowUrl) : LATEST.hyperfollowUrl;
+const latestListenLabel = latestOut ? `Listen to ${LATEST.title}` : "Pre-save on Spotify";
+
+const catalog = AFTER_TONIGHT;
+const spotifyAlbumId = catalog.spotifyUrl?.match(/open\.spotify\.com\/album\/([A-Za-z0-9]+)/)?.[1];
 const spotifyEmbedUrl = `https://open.spotify.com/embed/album/${spotifyAlbumId}?utm_source=generator&theme=0`;
-const spotifyEmbedHeight = Math.min(760, Math.max(352, 170 + ALBUM.tracks.length * 34));
+const spotifyEmbedHeight = Math.min(760, Math.max(352, 170 + catalog.tracks.length * 34));
 ---
 
 <Layout
-	title={`${SITE_NAME} | Synth-Pop Artist — ${ALBUM.title}`}
+	title={`${SITE_NAME} | Synth-Pop Artist — ${LATEST.title}, the New Album`}
 	description={META_DESCRIPTIONS.home}
 	canonicalUrl={canonicalUrl}
 	structuredData={structuredData}
@@ -24,68 +37,105 @@ const spotifyEmbedHeight = Math.min(760, Math.max(352, 170 + ALBUM.tracks.length
 >
 	<section class="hero">
 		{/*
-			LCP image. .hero-art covers the full-bleed hero (min(78vh, 620px) tall,
-			about 620px once the copy stacks on phones), so the square cover is
-			drawn at max(viewport width, ~620px). Widths stop at the 1254px source;
-			quality 60 is indistinguishable at 0.55 opacity under the scrim.
+			Ambient backdrop: the cover blurred far past recognition, so a small
+			640px rendition is plenty. The crisp cover beside the copy is the LCP.
 		*/}
-		<Image
-			class="hero-art"
-			src={cover}
-			alt=""
-			widths={[640, 960, 1254]}
-			sizes="(max-width: 640px) 640px, 100vw"
-			quality={60}
-			loading="eager"
-			fetchpriority="high"
-		/>
+		<Image class="hero-art hero-art-blur" src={latestCover} alt="" widths={[640]} sizes="640px" quality={50} loading="eager" />
 		<div class="hero-scrim" aria-hidden="true"></div>
 
-		<div class="hero-inner">
-			<span class="badge badge-filled">{ALBUM.kind} · {ALBUM.status}</span>
-			<h1 class="hero-title">{ALBUM.title}</h1>
-			<p class="hero-sub">{ALBUM.blurb}</p>
-			<div class="hero-cta">
-				<a class="btn btn-primary btn-lg" href="/music/">Hear the album</a>
-				<a class="btn btn-secondary btn-lg" href="/about/">About Dorian Black</a>
+		<div class="hero-inner hero-release">
+			<div class="hero-copy">
+				<h1 class="hero-title">{LATEST.title}</h1>
+				<p class="hero-date">
+					{latestOut ? "The new album, out now" : <>The new album, out <time datetime={LATEST.releaseDate}>{latestDay}</time></>}
+				</p>
+				<p class="hero-sub">{LATEST.blurb}</p>
+				<div class="hero-cta">
+					{latestListenUrl && (
+						<a class="btn btn-primary btn-lg" href={latestListenUrl} target="_blank" rel="noopener noreferrer">
+							{latestListenLabel}<span class="visually-hidden"> {NEW_TAB_HINT}</span>
+						</a>
+					)}
+					<a class="btn btn-secondary btn-lg" href={`/music/#${LATEST.slug}`}>See the tracklist</a>
+				</div>
 			</div>
+
+			{/*
+				LCP image. Drawn at up to 520px beside the copy, or the full column
+				(viewport minus gutters) once it stacks below 900px.
+			*/}
+			<Image
+				class="hero-cover"
+				src={latestCover}
+				alt={`${LATEST.title} album cover: a figure behind rippled neon glass, one eye showing through a break`}
+				widths={[400, 520, 800, 1040]}
+				sizes="(max-width: 900px) min(100vw - 32px, 520px), 520px"
+				quality={80}
+				loading="eager"
+				fetchpriority="high"
+			/>
 		</div>
 	</section>
 
 	<div class="page">
-		<section>
-			<h2 class="eyebrow">The record</h2>
-			<p class="stat-line">{TRACK_COUNT} tracks · {ALBUM_RUNTIME}</p>
-			<p class="lede" style="margin-top: var(--space-4)">{SITE_TAGLINE}</p>
+		<section aria-labelledby="latest-tracks">
+			<div class="section-head">
+				<h2 id="latest-tracks">On the record</h2>
+				<p class="section-meta">{LATEST.tracks.length} tracks, {releaseRuntime(LATEST)}</p>
+			</div>
+			{/* role="list" keeps list semantics in Safari/VoiceOver despite list-style: none. */}
+			<ol class="tracks-compact" role="list">
+				{LATEST.tracks.map((track) => (
+					<li>
+						<span class="track-n" aria-hidden="true">{String(track.n).padStart(2, "0")}</span>
+						<span class="tracks-compact-title">{track.title}</span>
+						<time class="track-time" datetime={formatDuration(track.duration).iso}>
+							<span aria-hidden="true">{track.duration}</span>
+							<span class="visually-hidden">{formatDuration(track.duration).spoken}</span>
+						</time>
+					</li>
+				))}
+			</ol>
 		</section>
 
-		<section class="section">
-			<h2 class="eyebrow">Listen now</h2>
-			<div class="spotify-embed" style={`height: ${spotifyEmbedHeight}px`} data-spotify-embed>
-				<button type="button" class="spotify-facade" data-spotify-load>
-					<span class="spotify-facade-title">Load the Spotify player</span>
-					<span class="spotify-facade-note">
-						Nothing is requested from Spotify until you click.
-					</span>
-				</button>
-				<template data-spotify-template>
-					<iframe
-						src={spotifyEmbedUrl}
-						width="100%"
-						height={spotifyEmbedHeight}
-						frameborder="0"
-						allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-						referrerpolicy="strict-origin-when-cross-origin"
-						title={`${ALBUM.title} on Spotify`}></iframe>
-				</template>
-				<noscript>
-					<p class="spotify-noscript">
-						<a href={ALBUM.spotifyUrl} target="_blank" rel="noopener noreferrer">
-							Listen to {ALBUM.title} on Spotify<span class="visually-hidden"> (opens in a new tab)</span>
-						</a>
-					</p>
-				</noscript>
+		<section class="catalog" aria-labelledby="catalog-title">
+			<div class="catalog-intro">
+				<Image class="catalog-cover" src={COVERS[catalog.slug]} alt={`${catalog.title} album cover`} widths={[160, 320]} sizes="160px" />
+				<div>
+					<h2 id="catalog-title">{catalog.title}</h2>
+					<p class="catalog-sub">The debut album, streaming now.</p>
+				</div>
 			</div>
+			<p class="lede">{catalog.blurb}</p>
+
+			{catalog.spotifyUrl && (
+				<div class="spotify-embed" style={`height: ${spotifyEmbedHeight}px`} data-spotify-embed>
+					<button type="button" class="spotify-facade" data-spotify-load>
+						<span class="spotify-facade-title">Load the Spotify player</span>
+						<span class="spotify-facade-note">
+							Nothing is requested from Spotify until you click or accept cookies.
+						</span>
+					</button>
+					<template data-spotify-template>
+						<iframe
+							src={spotifyEmbedUrl}
+							width="100%"
+							height={spotifyEmbedHeight}
+							frameborder="0"
+							loading="lazy"
+							allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+							referrerpolicy="strict-origin-when-cross-origin"
+							title={`${catalog.title} on Spotify`}></iframe>
+					</template>
+					<noscript>
+						<p class="spotify-noscript">
+							<a href={catalog.spotifyUrl} target="_blank" rel="noopener noreferrer">
+								Listen to {catalog.title} on Spotify<span class="visually-hidden"> {NEW_TAB_HINT}</span>
+							</a>
+						</p>
+					</noscript>
+				</div>
+			)}
 		</section>
 	</div>
 </Layout>
@@ -95,25 +145,143 @@ const spotifyEmbedHeight = Math.min(760, Math.max(352, 170 + ALBUM.tracks.length
 	const button = embed?.querySelector<HTMLButtonElement>("[data-spotify-load]");
 	const template = embed?.querySelector<HTMLTemplateElement>("[data-spotify-template]");
 
-	button?.addEventListener("click", () => {
+	/** Swap the facade for the player. Only a click moves focus into it. */
+	function loadPlayer(focus: boolean) {
 		const iframe = template?.content.querySelector("iframe")?.cloneNode(true);
-		if (!(iframe instanceof HTMLIFrameElement) || !embed || !button) return;
+		if (!(iframe instanceof HTMLIFrameElement) || !button?.isConnected) return;
 		button.replaceWith(iframe);
-		iframe.focus();
+		if (focus) iframe.focus();
+	}
+
+	button?.addEventListener("click", () => loadPlayer(true));
+
+	// With cookie consent (see CookieConsent.astro) the player loads by itself;
+	// without it, nothing is requested from Spotify until the visitor clicks.
+	if (document.documentElement.dataset.consent === "granted") loadPlayer(false);
+	document.addEventListener("db:consent", (event) => {
+		if ((event as CustomEvent<string>).detail === "granted") loadPlayer(false);
 	});
 </script>
 
 <style>
+	/* ── Hero: the new record ───────────────────── */
+
+	.hero-art-blur {
+		filter: blur(48px) saturate(1.2);
+		transform: scale(1.15);
+		opacity: 0.5;
+	}
+
+	.hero-release {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 520px);
+		align-items: center;
+		gap: clamp(32px, 5vw, 72px);
+	}
+
+	.hero-copy {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: var(--space-5);
+	}
+
+	.hero-title {
+		text-wrap: balance;
+	}
+
+	.hero-date {
+		font-family: var(--font-display);
+		font-size: var(--text-h3);
+		line-height: var(--lh-heading);
+		color: var(--cyan);
+	}
+
+	.hero-cover {
+		display: block;
+		width: 100%;
+		height: auto;
+		border-radius: var(--radius-md);
+		box-shadow:
+			0 0 0 1px rgba(255, 255, 255, 0.08),
+			0 24px 64px rgba(0, 0, 0, 0.6),
+			0 0 80px rgba(174, 0, 248, 0.25);
+	}
+
+	/* ── Sections ───────────────────────────────── */
+
 	.page {
 		padding-bottom: var(--space-7);
 	}
 
-	.section {
-		margin-top: var(--space-6);
+	.section-head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: var(--space-2) var(--space-5);
+		margin-bottom: var(--space-5);
+	}
+
+	.section-meta {
+		font-size: var(--text-body);
+		color: var(--ink-3);
+		font-variant-numeric: tabular-nums;
+	}
+
+	/* Two columns that read down, then across, so the sequence stays in order. */
+	.tracks-compact {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		columns: 2;
+		column-gap: clamp(24px, 4vw, 64px);
+		border-top: 1px solid var(--border-hairline);
+	}
+
+	.tracks-compact li {
+		display: grid;
+		grid-template-columns: 2.5rem 1fr auto;
+		align-items: baseline;
+		gap: var(--space-3);
+		padding: var(--space-3) var(--space-1);
+		border-bottom: 1px solid var(--border-hairline);
+		break-inside: avoid;
+	}
+
+	.tracks-compact-title {
+		font-size: var(--text-body-lg);
+		font-weight: 600;
+		color: var(--ink-1);
+	}
+
+	.catalog {
+		margin-top: var(--space-9);
+	}
+
+	.catalog-intro {
+		display: flex;
+		align-items: center;
+		gap: var(--space-5);
+		margin-bottom: var(--space-5);
+	}
+
+	.catalog-cover {
+		width: 112px;
+		height: 112px;
+		flex-shrink: 0;
+		border-radius: var(--radius-sm);
+		border: 1px solid var(--border-hairline);
+	}
+
+	.catalog-sub {
+		margin-top: var(--space-2);
+		font-size: var(--text-body-lg);
+		color: var(--ink-2);
 	}
 
 	.spotify-embed {
-		margin-top: var(--space-5);
+		margin-top: var(--space-6);
 		border: 1px solid var(--border-hairline);
 		border-radius: 0.5rem;
 		overflow: hidden;
@@ -159,5 +327,19 @@ const spotifyEmbedHeight = Math.min(760, Math.max(352, 170 + ALBUM.tracks.length
 
 	.spotify-noscript {
 		padding: var(--space-4);
+	}
+
+	@media (max-width: 900px) {
+		.hero-release {
+			grid-template-columns: minmax(0, 1fr);
+		}
+
+		.hero-cover {
+			max-width: 520px;
+		}
+
+		.tracks-compact {
+			columns: 1;
+		}
 	}
 </style>

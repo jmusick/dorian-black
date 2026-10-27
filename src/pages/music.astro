@@ -1,89 +1,120 @@
 ---
 import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
-import cover from "../assets/after-tonight-cover.png";
-import { ALBUM, ALBUM_RUNTIME, TRACK_COUNT, formatDuration } from "../data/album";
-import { ACTIVE_SOCIALS, SITE_NAME, SITE_URL, SOCIAL_REL, socialLabel } from "../config/site";
+import { RELEASES, formatDuration, formatReleaseDate, isReleased, releaseRuntime, releaseStatus } from "../data/album";
+import { COVERS } from "../data/covers";
+import { ACTIVE_SOCIALS, META_DESCRIPTIONS, NEW_TAB_HINT, SITE_NAME, SITE_URL, SOCIAL_REL, socialLabel } from "../config/site";
 import { buildSchemaGraph } from "../lib/schema";
 
 const canonicalUrl = `${SITE_URL}/music/`;
 
 const structuredData = await buildSchemaGraph({ album: true });
+
+const STORE_PROFILES = ACTIVE_SOCIALS.filter((s) => s.streaming && s.label !== "Spotify");
 ---
 
 <Layout
-	title={`${ALBUM.title} — ${SITE_NAME} | Synth-Pop Album`}
-	description={ALBUM.metaDescription}
+	title={`Music — ${SITE_NAME} | ${RELEASES.map((r) => r.title).join(" and ")}`}
+	description={META_DESCRIPTIONS.music}
 	canonicalUrl={canonicalUrl}
 	structuredData={structuredData}
-	ogType="music.album"
 	active="music"
 >
 	<div class="page">
-		<p class="eyebrow">Music</p>
-		<h1 style="margin-top: var(--space-3)">{ALBUM.title}</h1>
+		<h1>Music</h1>
 
-		<div class="release" style="margin-top: var(--space-7)">
-			<div class="release-art">
-				<Image src={cover} alt={`${ALBUM.title} album cover`} widths={[340, 680]} />
-			</div>
+		{RELEASES.map((release, i) => {
+			const out = isReleased(release);
+			const headingId = `${release.slug}-title`;
+			return (
+				<>
+					{i > 0 && <hr class="rule" />}
+					<section id={release.slug} class="release-block" aria-labelledby={headingId}>
+						<div class="release">
+							<div class="release-art">
+								<Image
+									src={COVERS[release.slug]}
+									alt={`${release.title} album cover`}
+									widths={[340, 680]}
+									sizes="(max-width: 900px) min(100vw - 32px, 340px), 340px"
+									loading={i === 0 ? "eager" : "lazy"}
+								/>
+							</div>
 
-			<div class="release-meta">
-				<span class="badge">{ALBUM.status}</span>
-				<p class="lede">{ALBUM.blurb}</p>
-				<div class="meta-row">
-					<span>{ALBUM.kind}</span>
-					<span>{TRACK_COUNT} tracks</span>
-					<span>{ALBUM_RUNTIME}</span>
-					<span>
-						{ALBUM.releaseDate
-							? new Date(`${ALBUM.releaseDate}T00:00:00`).toLocaleDateString("en-US", {
-									year: "numeric",
-									month: "long",
-									day: "numeric",
-								})
-							: `${ALBUM.year} · date TBA`}
-					</span>
-				</div>
+							<div class="release-meta">
+								<span class={out ? "badge" : "badge badge-filled"}>{releaseStatus(release)}</span>
+								<h2 id={headingId} class="release-title">{release.title}</h2>
+								<p class="lede">{release.blurb}</p>
+								<div class="meta-row">
+									<span>{release.kind}</span>
+									<span>{release.tracks.length} tracks</span>
+									<span>{releaseRuntime(release)}</span>
+									<span><time datetime={release.releaseDate}>{formatReleaseDate(release)}</time></span>
+								</div>
 
-				{ACTIVE_SOCIALS.length > 0 ? (
-					<div class="hero-cta">
-						{ACTIVE_SOCIALS.map((s) => (
-							<a class="btn btn-secondary" href={s.href} target="_blank" rel={SOCIAL_REL} aria-label={socialLabel(s)}>
-								{s.label}
-							</a>
-						))}
-					</div>
-				) : (
-					<p style="color: var(--ink-3)">
-						Streaming links go live with the record.
-					</p>
-				)}
-			</div>
-		</div>
+								<div class="hero-cta">
+									{!out && release.hyperfollowUrl && (
+										<a class="btn btn-primary" href={release.hyperfollowUrl} target="_blank" rel="noopener noreferrer">
+											Pre-save on Spotify<span class="visually-hidden"> {NEW_TAB_HINT}</span>
+										</a>
+									)}
+									{out && (release.spotifyUrl ?? release.hyperfollowUrl) && (
+										<a class="btn btn-primary" href={release.spotifyUrl ?? release.hyperfollowUrl} target="_blank" rel="noopener noreferrer">
+											{release.spotifyUrl ? "Listen on Spotify" : "Listen now"}<span class="visually-hidden"> {NEW_TAB_HINT}</span>
+										</a>
+									)}
+									{/* Store profiles other than the album's own Spotify link above. */}
+									{out && STORE_PROFILES.map((s) => (
+										<a class="btn btn-secondary" href={s.href} target="_blank" rel={SOCIAL_REL} aria-label={socialLabel(s)}>
+											{s.label}
+										</a>
+									))}
+								</div>
+							</div>
+						</div>
 
-		<hr class="rule" />
-
-		<section>
-			<h2 class="eyebrow">Tracklist</h2>
-			{/* role="list" keeps list semantics in Safari/VoiceOver despite list-style: none. */}
-			<ol class="tracklist" role="list" style="margin-top: var(--space-5)">
-				{ALBUM.tracks.map((track) => (
-					<li class="track">
-						<span class="track-n" aria-hidden="true">{String(track.n).padStart(2, "0")}</span>
-						<span>
-							<span class="track-title">{track.title}</span>
-							<span class="track-note">{track.note}</span>
-						</span>
-						<span class="track-time">
-							<time datetime={formatDuration(track.duration).iso}>
-								<span aria-hidden="true">{track.duration}</span>
-								<span class="visually-hidden">{formatDuration(track.duration).spoken}</span>
-							</time>
-						</span>
-					</li>
-				))}
-			</ol>
-		</section>
+						<h3 class="tracklist-title">Tracklist</h3>
+						{/* role="list" keeps list semantics in Safari/VoiceOver despite list-style: none. */}
+						<ol class="tracklist" role="list">
+							{release.tracks.map((track) => (
+								<li class="track">
+									<span class="track-n" aria-hidden="true">{String(track.n).padStart(2, "0")}</span>
+									<span>
+										<span class="track-title">{track.title}</span>
+										<span class="track-note">{track.note}</span>
+									</span>
+									<span class="track-time">
+										<time datetime={formatDuration(track.duration).iso}>
+											<span aria-hidden="true">{track.duration}</span>
+											<span class="visually-hidden">{formatDuration(track.duration).spoken}</span>
+										</time>
+									</span>
+								</li>
+							))}
+						</ol>
+					</section>
+				</>
+			);
+		})}
 	</div>
 </Layout>
+
+<style>
+	.release-block {
+		margin-top: var(--space-7);
+	}
+
+	.release-meta .badge {
+		align-self: flex-start;
+	}
+
+	.release-title {
+		font-size: var(--text-display-2);
+		line-height: var(--lh-tight);
+		text-wrap: balance;
+	}
+
+	.tracklist-title {
+		margin: var(--space-8) 0 var(--space-5);
+	}
+</style>

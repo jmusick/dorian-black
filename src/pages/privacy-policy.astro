@@ -3,7 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import { CONTACT_EMAIL, META_DESCRIPTIONS, SITE_NAME, SITE_URL } from "../config/site";
 
 const canonicalUrl = `${SITE_URL}/privacy-policy/`;
-const lastUpdated = "October 25, 2026";
+const lastUpdated = "October 27, 2026";
 ---
 
 <Layout
@@ -129,9 +129,10 @@ const lastUpdated = "October 25, 2026";
 					</li>
 					<li>
 						<strong>Spotify</strong> — the homepage offers a Spotify album player so
-						you can preview the record without leaving the site. It loads only after you
-						click "Load the Spotify player"; until then nothing is requested from
-						Spotify. Once loaded, Spotify's player may set its own cookies and collect
+						you can preview the record without leaving the site. If you accept the cookie
+						banner, the player loads with the page. Otherwise it loads only after you
+						click "Load the Spotify player", and until then nothing is requested from
+						Spotify. Withdrawing consent reloads the page without the player. Once loaded, Spotify's player may set its own cookies and collect
 						usage data, including your IP address. We also link to our Spotify artist
 						profile elsewhere. See the
 						<a href="https://www.spotify.com/legal/privacy-policy/" target="_blank" rel="noopener noreferrer">Spotify Privacy Policy<span class="visually-hidden"> (opens in a new tab)</span></a>.
@@ -151,7 +152,8 @@ const lastUpdated = "October 25, 2026";
 				<p class="lede">
 					This site does not set advertising cookies. Google Analytics cookies are set
 					only if you accept them, as described above. The Spotify
-					player may set its own cookies once you choose to load it, subject to Spotify's
+					player may set its own cookies once it loads, which happens only if you accept
+					the banner or click to load it, subject to Spotify's
 					privacy policy above. Cloudflare may use strictly necessary storage while
 					protecting the contact form. You can control or delete cookies through your
 					browser settings.

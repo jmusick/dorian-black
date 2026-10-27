@@ -21,8 +21,8 @@ visual styling or copy.
 - Images live in `src/assets/` and go through `astro:assets` (`<Image>`), which
   emits WebP, `srcset`, and intrinsic width/height. Only files that must keep a
   fixed URL (favicons, `site.webmanifest`, `og.png`, `robots.txt`) belong in
-  `public/`. `public/og.png` (1200x630) is generated from the cover and logo in
-  `src/assets/` by `node scripts/build-og-image.mjs`; keep it ≤300 KB.
+  `public/`. `public/og.png` (1200x630) is generated from the latest album
+  cover in `src/assets/` by `node scripts/build-og-image.mjs`; keep it ≤300 KB.
   `favicon.ico`, `apple-touch-icon.png` and `icon-192/512.png` come from the
   logo via `node scripts/build-icons.mjs`.
 - Icons via `astro-icon` + `@iconify-json/simple-icons` / `lucide`.
@@ -51,9 +51,14 @@ visual styling or copy.
   GA measurement ID. Entries with `href: null` are auto-hidden by the
   header/footer/Music page — don't special-case missing links elsewhere, just
   fill in the `href`. Use `ACTIVE_SOCIALS` when you need only live links.
-- `src/data/album.ts` — album/track data (`After Tonight`). Track order,
-  durations, and release date here are the single source for the Music page;
-  don't hardcode track info in components.
+- `src/data/album.ts` — release and track data (`SECOND_NATURE`,
+  `AFTER_TONIGHT`, `RELEASES` newest first, `LATEST` for the Home hero). Track
+  order, durations, release dates, and pre-save/streaming URLs here are the
+  single source for the Home and Music pages; don't hardcode track info in
+  components. `isReleased()` compares against the build date, so release-day
+  copy changes need a rebuild.
+- `src/data/covers.ts` — cover image per release slug, kept out of
+  `album.ts` so that file has no asset imports.
 - `src/lib/schema.ts` — builds the site's linked JSON-LD `@graph` from
   `site.ts` / `album.ts`; `Layout.astro` uses it by default.
 - `src/integrations/csp-headers.mjs` — build integration that writes inline
@@ -214,6 +219,10 @@ Target WCAG 2.2 AA. Don't regress what already passes:
   after the visitor accepts, and never in `astro dev` (`ANALYTICS_ID` is null
   there). The footer's "Cookie choices" button (`data-cookie-preferences`)
   reopens the banner. Same pattern as the SimonRook and Pneumaris sites.
+- The same consent covers the home page's Spotify player: it auto-loads only
+  when `<html data-consent="granted">` is set or a `db:consent` "granted"
+  event fires, and otherwise waits for a click. Keep the banner wording and
+  the privacy policy's Spotify entry in step with that.
 - Don't add a GA snippet to `<head>` directly — that would send data to Google
   before consent. Keep the Analytics section of `privacy-policy.astro` in sync.
 - Fonts are self-hosted from `public/fonts/` (`@font-face` in
