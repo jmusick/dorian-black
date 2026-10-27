@@ -79,6 +79,7 @@ npm run preview       # serve the built output
 npm run dev:worker    # build + wrangler dev on :8787, includes /api/contact
 npm run deploy        # build + wrangler deploy
 npm run types:worker  # regenerate worker-configuration.d.ts
+npm run check         # astro sync + tsc --noEmit (type check)
 ```
 
 `.claude/launch.json` defines a `dorian-black-dev` preview on port 4331 for
@@ -86,11 +87,22 @@ browser checks, and `dorian-black-worker` (`wrangler dev` on 8791, serving the
 current `dist/`) for checking response headers and the CSP. Rebuild before
 starting it.
 
-No test suite or linter is configured. Verify changes with `npm run build`
-and, for anything visual, `npm run dev` + a browser check (desktop and a
+No test suite or linter is configured. Verify changes with `npm run check`,
+`npm run build` and, for anything visual, `npm run dev` + a browser check (desktop and a
 320px-wide viewport). After a build, `node scripts/check-seo.mjs` prints each
 page's title and description length and exits non-zero if a description is
 missing or over 155 characters.
+
+## CI
+
+`.github/workflows/ci.yml` calls the shared [jmusick/ci](https://github.com/jmusick/ci)
+workflows (`baseline`: secret scan, lockfile and dependency audit; `web-app`:
+`npm run check`, `npm run build`, then `node scripts/check-seo.mjs`), pinned by
+commit SHA with the release tag as a comment. The `CI gate` job is the one
+check to require. Dependabot's `github-actions` entry proposes new jmusick/ci
+releases and action pins. `check` is `tsc --noEmit`, so `.astro` files are not
+type-checked: `@astrojs/check` does not support TypeScript 7 yet (peer range
+`^5 || ^6`); switch to `astro check` when it does.
 
 ## Issue tracker and backlog
 
