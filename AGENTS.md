@@ -126,8 +126,8 @@ and accessibility audit on 2026-10-11 filed issues #1–#25.
   Content changes go through `src/config/site.ts` / `src/data/album.ts`, not
   component-level hardcoding.
 - Remaining placeholder values are flagged inline (see README "Content
-  status" and comments in `site.ts`/`album.ts`, e.g. release date, track
-  order, About bio). Don't quietly invent real-looking replacements — either
+  status" and comments in `site.ts`/`album.ts`, e.g. the About bio and the
+  draft Second Nature blurb and track notes). Don't quietly invent real-looking replacements — either
   use the flagged placeholder or ask.
 - `astro.config.mjs` `site`, `src/config/site.ts` `SITE_URL`, and
   `public/robots.txt`'s `Sitemap:` line must all point at the same domain

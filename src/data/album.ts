@@ -69,30 +69,27 @@ export const AFTER_TONIGHT: Release = {
 	slug: "after-tonight",
 	title: "After Tonight",
 	kind: "Album",
+	// Confirmed on the DistroKid release, 2026-10-27.
 	releaseDate: "2026-08-14",
-	/**
-	 * PLACEHOLDER flag: this date has not been confirmed against the release
-	 * record (README "Content status").
-	 */
-	releaseDateConfirmed: false,
+	releaseDateConfirmed: true,
 	blurb:
 		"Twelve songs about the hours between last call and sunrise — crowded rooms, reckless attraction, and the quiet that arrives when the party finally ends.",
 	spotifyUrl: "https://open.spotify.com/album/1b10wj76W5exnmt1wkNlbW",
 	hyperfollowUrl: null,
-	// Proposed sequence, not a confirmed master order.
+	// Sequence from the DistroKid release.
 	tracks: [
-		{ n: 1, title: "Everybody Wants Tonight", duration: "4:23", note: "The doors open." },
-		{ n: 2, title: "Bad Idea, Good Time", duration: "3:36", note: "Knowing better, going anyway." },
-		{ n: 3, title: "Across the Room", duration: "4:45", note: "The first look." },
-		{ n: 4, title: "Say It With Your Hands", duration: "4:13", note: "Too loud to talk." },
-		{ n: 5, title: "No Alibi", duration: "3:28", note: "Caught, and not sorry." },
-		{ n: 6, title: "No One's Going Home", duration: "3:32", note: "Peak of the night." },
-		{ n: 7, title: "Don't Wake the City", duration: "4:50", note: "Streets to themselves." },
-		{ n: 8, title: "The Night We Never Had", duration: "5:14", note: "The version that didn't happen." },
+		{ n: 1, title: "Bad Idea, Good Time", duration: "3:36", note: "Knowing better, going anyway." },
+		{ n: 2, title: "Don't Wake the City", duration: "4:50", note: "Streets to themselves." },
+		{ n: 3, title: "Neon Funeral", duration: "3:55", note: "Lights coming up." },
+		{ n: 4, title: "Across the Room", duration: "4:45", note: "The first look." },
+		{ n: 5, title: "Say It With Your Hands", duration: "4:13", note: "Too loud to talk." },
+		{ n: 6, title: "The Night We Never Had", duration: "5:14", note: "The version that didn't happen." },
+		{ n: 7, title: "The Morning Doesn't Care", duration: "5:05", note: "Sunrise, unmoved." },
+		{ n: 8, title: "No One's Going Home", duration: "3:32", note: "Peak of the night." },
 		{ n: 9, title: "Where You Are", duration: "4:09", note: "Looking for one person in the crowd." },
-		{ n: 10, title: "Neon Funeral", duration: "3:55", note: "Lights coming up." },
-		{ n: 11, title: "No Good Goodbye", duration: "4:28", note: "The parking lot." },
-		{ n: 12, title: "The Morning Doesn't Care", duration: "5:05", note: "Sunrise, unmoved." },
+		{ n: 10, title: "No Alibi", duration: "3:28", note: "Caught, and not sorry." },
+		{ n: 11, title: "Everybody Wants Tonight", duration: "4:23", note: "The doors open." },
+		{ n: 12, title: "No Good Goodbye", duration: "4:28", note: "The parking lot." },
 	],
 };
 

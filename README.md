@@ -34,9 +34,8 @@ The site's visual language uses near-black backgrounds, magenta/violet/blue neon
   "Pre-save" to "Out now" and "Listen" on the first build on or after the
   release date. Rebuild on release day and fill in `SECOND_NATURE.spotifyUrl`
   once the Spotify album page exists.
-- After Tonight's `releaseDate` (`2026-08-14`) is unconfirmed; confirm it
-  against the release record before treating it as approved metadata. Its
-  track order is a proposed sequence, not a confirmed master order.
+- After Tonight's track order and release date (2026-08-14) come from the
+  DistroKid release.
 
 The site has Home, Music, About, Contact, and Privacy Policy pages, plus a
 branded 404 page. Home leads with the latest release (`LATEST`) and keeps the
