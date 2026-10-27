@@ -103,7 +103,7 @@ npm run deploy
 ```
 
 Worker Builds connects to `jmusick/dorian-black`, production branch
-`master`, build command `npm run build`, deploy command `npx wrangler deploy`.
+`main`, build command `npm run build`, deploy command `npx wrangler deploy`.
 Other branches (pull requests) run the preview command
 `npx wrangler versions upload --dry-run`, so PR checks build and validate the
 config but upload nothing; preview URLs stay off. The builder installs with

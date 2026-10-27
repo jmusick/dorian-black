@@ -28,7 +28,7 @@ visual styling or copy.
 - Icons via `astro-icon` + `@iconify-json/simple-icons` / `lucide`.
 - `@astrojs/sitemap` generates `sitemap-index.xml` at build time.
 - Deploy target: Cloudflare Worker `dorian-black` via `wrangler.toml`
-  (`npm run deploy`, or Workers Builds on push to `master`).
+  (`npm run deploy`, or Workers Builds on push to `main`).
 - Workers Builds installs with npm 10.9.2 (`npm ci`), which ignores nested
   `overrides` and then rejects the lockfile. `package.json` overrides use the
   version-selector form (`"undici@7": "^7.30.1"` lifts miniflare's undici for

@@ -102,7 +102,7 @@ export const LATEST = SECOND_NATURE;
 /**
  * Whether a release is out as of the build. The site is static, so pages
  * switch from pre-release to "out now" copy on the first build on or after
- * the release date (any push to master, or `npm run deploy`).
+ * the release date (any push to main, or `npm run deploy`).
  */
 export function isReleased(release: Release, now = new Date()): boolean {
 	return now >= new Date(`${release.releaseDate}T00:00:00`);
