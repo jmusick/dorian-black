@@ -17,15 +17,15 @@ const latestDay = new Date(`${LATEST.releaseDate}T00:00:00`).toLocaleDateString(
 	month: "long",
 	day: "numeric",
 });
-// Before release the HyperFollow page is a Spotify pre-save; after, it lists
-// every store until the Spotify album URL is filled in.
+// HyperFollow remains the fallback until direct store links are available.
 const latestListenUrl = latestOut ? (LATEST.spotifyUrl ?? LATEST.hyperfollowUrl) : LATEST.hyperfollowUrl;
-const latestListenLabel = latestOut ? `Listen to ${LATEST.title}` : "Pre-save on Spotify";
+const latestListenLabel = latestOut ? (LATEST.spotifyUrl ? "Listen on Spotify" : "Listen now") : "Pre-save on Spotify";
 
 const catalog = AFTER_TONIGHT;
-const spotifyAlbumId = catalog.spotifyUrl?.match(/open\.spotify\.com\/album\/([A-Za-z0-9]+)/)?.[1];
+const playerRelease = latestOut && LATEST.spotifyUrl ? LATEST : catalog;
+const spotifyAlbumId = playerRelease.spotifyUrl?.match(/open\.spotify\.com\/album\/([A-Za-z0-9]+)/)?.[1];
 const spotifyEmbedUrl = `https://open.spotify.com/embed/album/${spotifyAlbumId}?utm_source=generator&theme=0`;
-const spotifyEmbedHeight = Math.min(760, Math.max(352, 170 + catalog.tracks.length * 34));
+const spotifyEmbedHeight = Math.min(760, Math.max(352, 170 + playerRelease.tracks.length * 34));
 ---
 
 <Layout
@@ -56,8 +56,13 @@ const spotifyEmbedHeight = Math.min(760, Math.max(352, 170 + catalog.tracks.leng
 							{latestListenLabel}<span class="visually-hidden"> {NEW_TAB_HINT}</span>
 						</a>
 					)}
-					<a class="btn btn-secondary btn-lg" href={`/music/#${LATEST.slug}`}>See the tracklist</a>
+					{latestOut && LATEST.appleMusicUrl && (
+						<a class="btn btn-secondary btn-lg" href={LATEST.appleMusicUrl} target="_blank" rel="noopener noreferrer">
+							Listen on Apple Music<span class="visually-hidden"> {NEW_TAB_HINT}</span>
+						</a>
+					)}
 				</div>
+				<p><a href={`/music/#${LATEST.slug}`}>See the full tracklist</a></p>
 			</div>
 
 			{/*
@@ -96,22 +101,11 @@ const spotifyEmbedHeight = Math.min(760, Math.max(352, 170 + catalog.tracks.leng
 					</li>
 				))}
 			</ol>
-		</section>
 
-		<section class="catalog" aria-labelledby="catalog-title">
-			<div class="catalog-intro">
-				<Image class="catalog-cover" src={COVERS[catalog.slug]} alt={`${catalog.title} album cover`} widths={[160, 320]} sizes="160px" />
-				<div>
-					<h2 id="catalog-title">{catalog.title}</h2>
-					<p class="catalog-sub">The debut album, streaming now.</p>
-				</div>
-			</div>
-			<p class="lede">{catalog.blurb}</p>
-
-			{catalog.spotifyUrl && (
-				<div class="spotify-embed" style={`height: ${spotifyEmbedHeight}px`} data-spotify-embed>
+			{playerRelease.spotifyUrl && (
+				<div class="spotify-embed" data-spotify-embed>
 					<button type="button" class="spotify-facade" data-spotify-load>
-						<span class="spotify-facade-title">Load the Spotify player</span>
+						<span class="spotify-facade-title">Load the {playerRelease.title} player</span>
 						<span class="spotify-facade-note">
 							Nothing is requested from Spotify until you click or accept cookies.
 						</span>
@@ -125,17 +119,41 @@ const spotifyEmbedHeight = Math.min(760, Math.max(352, 170 + catalog.tracks.leng
 							loading="lazy"
 							allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
 							referrerpolicy="strict-origin-when-cross-origin"
-							title={`${catalog.title} on Spotify`}></iframe>
+							title={`${playerRelease.title} on Spotify`}></iframe>
 					</template>
 					<noscript>
 						<p class="spotify-noscript">
-							<a href={catalog.spotifyUrl} target="_blank" rel="noopener noreferrer">
-								Listen to {catalog.title} on Spotify<span class="visually-hidden"> {NEW_TAB_HINT}</span>
+							<a href={playerRelease.spotifyUrl} target="_blank" rel="noopener noreferrer">
+								Listen to {playerRelease.title} on Spotify<span class="visually-hidden"> {NEW_TAB_HINT}</span>
 							</a>
 						</p>
 					</noscript>
 				</div>
 			)}
+		</section>
+
+		<section class="catalog" aria-labelledby="catalog-title">
+			<div class="catalog-intro">
+				<Image class="catalog-cover" src={COVERS[catalog.slug]} alt={`${catalog.title} album cover`} widths={[160, 320]} sizes="160px" />
+				<div>
+					<h2 id="catalog-title">{catalog.title}</h2>
+					<p class="catalog-sub">The debut album, streaming now.</p>
+				</div>
+			</div>
+			<p class="lede">{catalog.blurb}</p>
+
+			<div class="hero-cta">
+				{catalog.spotifyUrl && (
+					<a class="btn btn-secondary" href={catalog.spotifyUrl} target="_blank" rel="noopener noreferrer">
+						Listen on Spotify<span class="visually-hidden"> {NEW_TAB_HINT}</span>
+					</a>
+				)}
+				{catalog.appleMusicUrl && (
+					<a class="btn btn-secondary" href={catalog.appleMusicUrl} target="_blank" rel="noopener noreferrer">
+						Listen on Apple Music<span class="visually-hidden"> {NEW_TAB_HINT}</span>
+					</a>
+				)}
+			</div>
 		</section>
 	</div>
 </Layout>
@@ -300,8 +318,8 @@ const spotifyEmbedHeight = Math.min(760, Math.max(352, 170 + catalog.tracks.leng
 		justify-content: center;
 		gap: var(--space-2);
 		width: 100%;
-		height: 100%;
-		padding: var(--space-4);
+		min-height: 180px;
+		padding: var(--space-5);
 		border: 0;
 		background: var(--surface);
 		color: var(--ink-1);

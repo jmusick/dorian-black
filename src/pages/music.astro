@@ -63,8 +63,13 @@ const STORE_PROFILES = ACTIVE_SOCIALS.filter((s) => s.streaming && s.label !== "
 											{release.spotifyUrl ? "Listen on Spotify" : "Listen now"}<span class="visually-hidden"> {NEW_TAB_HINT}</span>
 										</a>
 									)}
-									{/* Store profiles other than the album's own Spotify link above. */}
-									{out && STORE_PROFILES.map((s) => (
+									{out && release.appleMusicUrl && (
+										<a class="btn btn-secondary" href={release.appleMusicUrl} target="_blank" rel="noopener noreferrer">
+											Listen on Apple Music<span class="visually-hidden"> {NEW_TAB_HINT}</span>
+										</a>
+									)}
+									{/* Fall back to store profiles when no album link is available. */}
+									{out && STORE_PROFILES.filter((s) => s.label !== "Apple Music" || !release.appleMusicUrl).map((s) => (
 										<a class="btn btn-secondary" href={s.href} target="_blank" rel={SOCIAL_REL} aria-label={socialLabel(s)}>
 											{s.label}
 										</a>

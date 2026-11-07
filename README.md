@@ -23,24 +23,24 @@ The site's visual language uses near-black backgrounds, magenta/violet/blue neon
 - The Contact page, Turnstile widget, and Email Sending handler are configured;
   production requires encrypted Worker secrets for the API token and Turnstile.
 - `src/data/album.ts` holds both releases. Second Nature's sequence and
-  release date (2026-11-06) come from the DistroKid release; its pre-save
-  button links the DistroKid HyperFollow page.
+  release date (2026-11-06) come from the DistroKid release. Direct Spotify
+  and Apple Music album links for both releases were verified against the
+  linked artist profiles on 2026-11-06.
 - Second Nature's `blurb`, its track notes, and the About page sentence about
   it are draft copy written from the lyrics, not approved artist copy.
 - The Second Nature cover is the 3000 x 3000 JPEG uploaded to DistroKid
   (`assets/concepts/second-nature/second-nature-broken-glass-straight-torso-3000x3000.jpg`
   in the project library), resized to 1400 px in `src/assets/`.
-- The site is static, so Second Nature switches from "Out November 6" and
-  "Pre-save" to "Out now" and "Listen" on the first build on or after the
-  release date. Rebuild on release day and fill in `SECOND_NATURE.spotifyUrl`
-  once the Spotify album page exists.
+- Second Nature is out now. Home and Music link directly to the album on
+  Spotify and Apple Music. Release status is evaluated at build time;
+  HyperFollow remains the pre-save and fallback destination for future releases.
 - After Tonight's track order and release date (2026-08-14) come from the
   DistroKid release.
 
 The site has Home, Music, About, Contact, and Privacy Policy pages, plus a
-branded 404 page. Home leads with the latest release (`LATEST`) and keeps the
-After Tonight Spotify player; the Music page lists every release with its
-tracklist. Track listings and WAV-derived durations come from
+branded 404 page. Home leads with the latest release (`LATEST`), including its
+Spotify player once released, and links to the debut below; the Music page
+lists every release with its tracklist. Track listings and WAV-derived durations come from
 [src/data/album.ts](src/data/album.ts); cover art is mapped by slug in
 [src/data/covers.ts](src/data/covers.ts). Official streaming and social profile
 URLs are maintained in [src/config/site.ts](src/config/site.ts).

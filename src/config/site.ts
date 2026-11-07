@@ -114,7 +114,7 @@ const LATEST_WHEN = isReleased(LATEST) ? "out now" : `out ${formatReleaseDate(LA
 
 export const META_DESCRIPTIONS = {
 	home: `${SITE_NAME} is a synth-pop artist. The new album ${LATEST.title} is ${LATEST_WHEN}; the debut, ${AFTER_TONIGHT.title}, is streaming now.`,
-	music: `Music by ${SITE_NAME}: the synth-pop albums ${LATEST.title} (${LATEST_WHEN}) and ${AFTER_TONIGHT.title}. Tracklists, pre-save and streaming links.`,
+	music: `Music by ${SITE_NAME}: the synth-pop albums ${LATEST.title} (${LATEST_WHEN}) and ${AFTER_TONIGHT.title}. Tracklists and streaming links.`,
 	// PLACEHOLDER: deliberately generic until approved bio copy exists. Do not add biography facts here.
 	about: `About ${SITE_NAME}, a synth-pop artist, and the albums ${LATEST.title} and ${AFTER_TONIGHT.title}.`,
 	contact: `Contact ${SITE_NAME} for booking, press, licensing, collaborations, and general enquiries.`,

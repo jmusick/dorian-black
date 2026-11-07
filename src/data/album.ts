@@ -31,6 +31,8 @@ export interface Release {
 	blurb: string;
 	/** Spotify album page; null until the stores publish it. */
 	spotifyUrl: string | null;
+	/** Apple Music album page; null until the store publishes it. */
+	appleMusicUrl: string | null;
 	/** DistroKid HyperFollow page: pre-save before release, store links after. */
 	hyperfollowUrl: string | null;
 	tracks: Track[];
@@ -46,7 +48,9 @@ export const SECOND_NATURE: Release = {
 	// DRAFT copy written from the lyrics, not approved artist copy (README "Content status").
 	blurb:
 		"Twelve songs about the love that outlasts last call: kitchen dances, the nine o'clock phone call, and the person still saving you the booth by the window.",
-	spotifyUrl: null,
+	// Verified on the linked artist profiles, 2026-11-06.
+	spotifyUrl: "https://open.spotify.com/album/58vAqxS5rcvZA5tt9TjVEG",
+	appleMusicUrl: "https://music.apple.com/us/album/second-nature/6827692918",
 	hyperfollowUrl: "https://distrokid.com/hyperfollow/dorianblack2/second-nature",
 	// Sequence from the DistroKid release. Notes are DRAFT copy drawn from the lyrics.
 	tracks: [
@@ -75,6 +79,7 @@ export const AFTER_TONIGHT: Release = {
 	blurb:
 		"Twelve songs about the hours between last call and sunrise — crowded rooms, reckless attraction, and the quiet that arrives when the party finally ends.",
 	spotifyUrl: "https://open.spotify.com/album/1b10wj76W5exnmt1wkNlbW",
+	appleMusicUrl: "https://music.apple.com/us/album/after-tonight/6801407412",
 	hyperfollowUrl: null,
 	// Sequence from the DistroKid release.
 	tracks: [

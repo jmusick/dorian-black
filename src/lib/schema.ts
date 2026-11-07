@@ -61,6 +61,7 @@ export async function buildSchemaGraph({ album = false }: SchemaGraphOptions = {
 		for (const release of RELEASES) {
 			const coverImage = await getImage({ src: COVERS[release.slug], width: 1200 });
 			const id = albumId(release);
+			const storeUrls = [release.spotifyUrl, release.appleMusicUrl].filter((url): url is string => url !== null);
 			graph.push({
 				"@type": "MusicAlbum",
 				"@id": id,
@@ -75,7 +76,7 @@ export async function buildSchemaGraph({ album = false }: SchemaGraphOptions = {
 				albumReleaseType: "https://schema.org/AlbumRelease",
 				numTracks: release.tracks.length,
 				byArtist: ref(SCHEMA_IDS.artist),
-				...(release.spotifyUrl ? { sameAs: [release.spotifyUrl] } : {}),
+				...(storeUrls.length ? { sameAs: storeUrls } : {}),
 				track: release.tracks.map((t) => ({
 					"@type": "MusicRecording",
 					position: t.n,
