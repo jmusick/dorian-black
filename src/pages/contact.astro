@@ -125,6 +125,10 @@ const functionUnavailable = import.meta.env.DEV;
 					<a href="/privacy-policy/">Privacy Policy</a>.
 				</p>
 
+				<p class="form-privacy">
+					Prefer email? Write to <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+				</p>
+
 				{functionUnavailable && (
 					<p class="dev-note">
 						<strong>Development mode:</strong> Turnstile uses its test key here, but
