@@ -1,5 +1,5 @@
 import type { ImageMetadata } from "astro";
-import afterTonightCover from "../assets/after-tonight-cover.png";
+import afterTonightCover from "../assets/after-tonight-cover.jpg";
 import secondNatureCover from "../assets/second-nature-cover.jpg";
 import type { Release } from "./album";
 
