@@ -30,9 +30,8 @@ visual styling or copy.
 - Deploy target: Cloudflare Worker `dorian-black` via `wrangler.toml`
   (`npm run deploy`, or Workers Builds on push to `main`).
 - Workers Builds installs with npm 10.9.2 (`npm ci`), which ignores nested
-  `overrides` and then rejects the lockfile. `package.json` overrides use the
-  version-selector form (`"undici@7": "^7.30.1"` lifts miniflare's undici for
-  Dependabot alert #5; drop it once wrangler ships undici ≥ 7.30.1). After
+  `overrides` and then rejects the lockfile. If an override is ever needed, use
+  the top-level version-selector form (e.g. `"undici@7": "^7.30.1"`). After
   touching overrides or the lockfile, check `npx -y npm@10.9.2 ci` passes.
 
 ## Structure
