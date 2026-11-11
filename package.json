@@ -18,16 +18,16 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
-    "@iconify-json/lucide": "^1.2.147",
-    "@iconify-json/simple-icons": "^1.2.100",
-    "astro": "^7.4.2",
+    "@iconify-json/lucide": "^1.2.152",
+    "@iconify-json/simple-icons": "^1.2.101",
+    "astro": "^7.4.7",
     "astro-icon": "^1.2.0"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^5.20261024.1",
+    "@cloudflare/workers-types": "^5.20261108.1",
     "@types/node": "^22.20.5",
     "typescript": "^7.0.2",
-    "wrangler": "^4.152.0"
+    "wrangler": "^4.158.0"
   },
   "overrides": {
     "undici@7": "^7.30.1"
