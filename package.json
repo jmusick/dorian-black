@@ -1,9 +1,9 @@
 {
   "name": "dorian-black",
   "type": "module",
-  "version": "1.10.2",
+  "version": "1.10.3",
   "engines": {
-    "node": ">=22.12.0"
+    "node": ">=22.18.0"
   },
   "scripts": {
     "dev": "astro dev",
@@ -13,7 +13,8 @@
     "deploy": "npm run build && wrangler deploy",
     "types:worker": "wrangler types --include-runtime=false",
     "astro": "astro",
-    "check": "astro sync && tsc --noEmit"
+    "check": "astro sync && tsc --noEmit",
+    "test": "node --test \"worker/**/*.test.ts\""
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
@@ -24,6 +25,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20261024.1",
+    "@types/node": "^22.20.5",
     "typescript": "^7.0.2",
     "wrangler": "^4.152.0"
   },

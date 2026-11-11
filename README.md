@@ -71,19 +71,20 @@ asset indexes and playlist order do not establish a final master sequence.
 
 ## Development
 
-Requires Node `>=22.12.0`.
+Requires Node `>=22.18.0` (the first 22.x that runs `.ts` tests without a flag).
 
 ```bash
 npm install
 npm run dev                                  # static pages only
 npm run build
 npm run check                               # type check (astro sync + tsc --noEmit)
+npm test                                    # contact-handler tests (node:test, no network)
 npm run dev:worker                          # includes /api/contact on :8787
 ```
 
 GitHub Actions (`.github/workflows/ci.yml`) runs the shared
 [jmusick/ci](https://github.com/jmusick/ci) checks on every pull request and
-push to `main`: secret scan, dependency audit, type check, build, and
+push to `main`: secret scan, dependency audit, type check, tests, build, and
 `scripts/check-seo.mjs`. See [AGENTS.md](AGENTS.md#ci) for details.
 
 ## Build

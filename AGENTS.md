@@ -80,6 +80,7 @@ npm run dev:worker    # build + wrangler dev on :8787, includes /api/contact
 npm run deploy        # build + wrangler deploy
 npm run types:worker  # regenerate worker-configuration.d.ts
 npm run check         # astro sync + tsc --noEmit (type check)
+npm test              # node:test suite for worker/contact.ts (no network)
 ```
 
 `.claude/launch.json` defines a `dorian-black-dev` preview on port 4331 for
@@ -87,7 +88,14 @@ browser checks, and `dorian-black-worker` (`wrangler dev` on 8791, serving the
 current `dist/`) for checking response headers and the CSP. Rebuild before
 starting it.
 
-No test suite or linter is configured. Verify changes with `npm run check`,
+`npm test` runs `worker/**/*.test.ts` with Node's built-in runner and type
+stripping, which is on by default from Node 22.18 (the `engines` floor);
+import the code under test with its `.ts` extension. CI runs it too. `worker/contact.test.ts`
+pins every `/api/contact` hardening rule through `handleContact()`, with a
+fake `env` and a stubbed `fetch` that throws on any URL it doesn't expect, so
+it never contacts Turnstile or sends email. Run it after touching
+`worker/contact.ts`; it must keep passing unless a rule changes on purpose.
+The pages have no tests and no linter is configured. Verify changes with `npm run check`,
 `npm run build` and, for anything visual, `npm run dev` + a browser check (desktop and a
 320px-wide viewport). After a build, `node scripts/check-seo.mjs` prints each
 page's title and description length and exits non-zero if a description is
@@ -97,7 +105,7 @@ missing or over 155 characters.
 
 `.github/workflows/ci.yml` calls the shared [jmusick/ci](https://github.com/jmusick/ci)
 workflows (`baseline`: secret scan, lockfile and dependency audit; `web-app`:
-`npm run check`, `npm run build`, then `node scripts/check-seo.mjs`), pinned by
+`npm run check`, `npm test`, `npm run build`, then `node scripts/check-seo.mjs`), pinned by
 commit SHA with the release tag as a comment. The `CI gate` job is the one
 check to require. Dependabot's `github-actions` entry proposes new jmusick/ci
 releases and action pins. `check` is `tsc --noEmit`, so `.astro` files are not
