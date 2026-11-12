@@ -104,18 +104,23 @@ export const RELEASES: Release[] = [SECOND_NATURE, AFTER_TONIGHT];
 /** The release the Home page leads with. */
 export const LATEST = SECOND_NATURE;
 
+/** Midnight local time on the release date: the moment the build counts it as out. */
+export function releaseDay(release: Release): Date {
+	return new Date(`${release.releaseDate}T00:00:00`);
+}
+
 /**
  * Whether a release is out as of the build. The site is static, so pages
  * switch from pre-release to "out now" copy on the first build on or after
  * the release date (any push to main, or `npm run deploy`).
  */
 export function isReleased(release: Release, now = new Date()): boolean {
-	return now >= new Date(`${release.releaseDate}T00:00:00`);
+	return now >= releaseDay(release);
 }
 
 /** "November 6, 2026" */
 export function formatReleaseDate(release: Release): string {
-	return new Date(`${release.releaseDate}T00:00:00`).toLocaleDateString("en-US", {
+	return releaseDay(release).toLocaleDateString("en-US", {
 		year: "numeric",
 		month: "long",
 		day: "numeric",
@@ -125,8 +130,71 @@ export function formatReleaseDate(release: Release): string {
 /** "Out now" or "Out November 6". */
 export function releaseStatus(release: Release): string {
 	if (isReleased(release)) return "Out now";
-	const date = new Date(`${release.releaseDate}T00:00:00`);
-	return `Out ${date.toLocaleDateString("en-US", { month: "long", day: "numeric" })}`;
+	return `Out ${releaseDay(release).toLocaleDateString("en-US", { month: "long", day: "numeric" })}`;
+}
+
+/** The shape of a store profile from `ACTIVE_SOCIALS` in src/config/site.ts. */
+export interface StoreProfile {
+	label: string;
+	href: string;
+	streaming?: boolean;
+}
+
+/** One listen/store button for a release. */
+export interface ListenLink<P extends StoreProfile = StoreProfile> {
+	label: string;
+	href: string;
+	/** The release's main call to action: the pre-save, or the Spotify/HyperFollow link once out. */
+	primary: boolean;
+	/** The release's own Spotify or Apple Music album page (the JSON-LD `sameAs` links). */
+	albumPage: boolean;
+	/** Set when the button falls back to an artist store profile instead of an album link. */
+	profile?: P;
+}
+
+export interface ListenLinkOptions<P extends StoreProfile> {
+	/**
+	 * Artist profiles (pass `ACTIVE_SOCIALS`) to fall back on for stores the
+	 * release has no album link for. Passed in because src/config/site.ts
+	 * imports this file. Omit for no profile fallback.
+	 */
+	profiles?: readonly P[];
+	/** Treat the release as out (or not) instead of checking the build date. */
+	released?: boolean;
+}
+
+/**
+ * The listen/store buttons for a release, in display order: the HyperFollow
+ * pre-save before release; once out, Spotify (HyperFollow "Listen now" until
+ * the direct store link is available), then Apple Music, then any store
+ * profile the release has no album link for. The Spotify profile is never
+ * listed: the Spotify/HyperFollow button covers Spotify.
+ */
+export function listenLinks<P extends StoreProfile>(
+	release: Release,
+	{ profiles = [], released = isReleased(release) }: ListenLinkOptions<P> = {},
+): ListenLink<P>[] {
+	const links: ListenLink<P>[] = [];
+	if (!released) {
+		if (release.hyperfollowUrl) {
+			links.push({ label: "Pre-save on Spotify", href: release.hyperfollowUrl, primary: true, albumPage: false });
+		}
+		return links;
+	}
+	if (release.spotifyUrl) {
+		links.push({ label: "Listen on Spotify", href: release.spotifyUrl, primary: true, albumPage: true });
+	} else if (release.hyperfollowUrl) {
+		links.push({ label: "Listen now", href: release.hyperfollowUrl, primary: true, albumPage: false });
+	}
+	if (release.appleMusicUrl) {
+		links.push({ label: "Listen on Apple Music", href: release.appleMusicUrl, primary: false, albumPage: true });
+	}
+	for (const profile of profiles) {
+		if (!profile.streaming || profile.label === "Spotify") continue;
+		if (profile.label === "Apple Music" && release.appleMusicUrl) continue;
+		links.push({ label: profile.label, href: profile.href, primary: false, albumPage: false, profile });
+	}
+	return links;
 }
 
 /**

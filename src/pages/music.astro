@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
-import { RELEASES, formatDuration, formatReleaseDate, isReleased, releaseRuntime, releaseStatus } from "../data/album";
+import { RELEASES, formatDuration, formatReleaseDate, isReleased, listenLinks, releaseRuntime, releaseStatus } from "../data/album";
 import { COVERS } from "../data/covers";
 import { ACTIVE_SOCIALS, META_DESCRIPTIONS, NEW_TAB_HINT, SITE_NAME, SITE_URL, SOCIAL_REL, socialLabel } from "../config/site";
 import { buildSchemaGraph } from "../lib/schema";
@@ -9,8 +9,6 @@ import { buildSchemaGraph } from "../lib/schema";
 const canonicalUrl = `${SITE_URL}/music/`;
 
 const structuredData = await buildSchemaGraph({ album: true });
-
-const STORE_PROFILES = ACTIVE_SOCIALS.filter((s) => s.streaming && s.label !== "Spotify");
 ---
 
 <Layout
@@ -53,27 +51,18 @@ const STORE_PROFILES = ACTIVE_SOCIALS.filter((s) => s.streaming && s.label !== "
 								</div>
 
 								<div class="hero-cta">
-									{!out && release.hyperfollowUrl && (
-										<a class="btn btn-primary" href={release.hyperfollowUrl} target="_blank" rel="noopener noreferrer">
-											Pre-save on Spotify<span class="visually-hidden"> {NEW_TAB_HINT}</span>
-										</a>
+									{/* Store profiles fill in for stores the release has no album link for. */}
+									{listenLinks(release, { profiles: ACTIVE_SOCIALS }).map((link) =>
+										link.profile ? (
+											<a class="btn btn-secondary" href={link.href} target="_blank" rel={SOCIAL_REL} aria-label={socialLabel(link.profile)}>
+												{link.label}
+											</a>
+										) : (
+											<a class={link.primary ? "btn btn-primary" : "btn btn-secondary"} href={link.href} target="_blank" rel="noopener noreferrer">
+												{link.label}<span class="visually-hidden"> {NEW_TAB_HINT}</span>
+											</a>
+										),
 									)}
-									{out && (release.spotifyUrl ?? release.hyperfollowUrl) && (
-										<a class="btn btn-primary" href={release.spotifyUrl ?? release.hyperfollowUrl} target="_blank" rel="noopener noreferrer">
-											{release.spotifyUrl ? "Listen on Spotify" : "Listen now"}<span class="visually-hidden"> {NEW_TAB_HINT}</span>
-										</a>
-									)}
-									{out && release.appleMusicUrl && (
-										<a class="btn btn-secondary" href={release.appleMusicUrl} target="_blank" rel="noopener noreferrer">
-											Listen on Apple Music<span class="visually-hidden"> {NEW_TAB_HINT}</span>
-										</a>
-									)}
-									{/* Fall back to store profiles when no album link is available. */}
-									{out && STORE_PROFILES.filter((s) => s.label !== "Apple Music" || !release.appleMusicUrl).map((s) => (
-										<a class="btn btn-secondary" href={s.href} target="_blank" rel={SOCIAL_REL} aria-label={socialLabel(s)}>
-											{s.label}
-										</a>
-									))}
 								</div>
 							</div>
 						</div>

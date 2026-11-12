@@ -55,7 +55,9 @@ visual styling or copy.
   order, durations, release dates, and pre-save/streaming URLs here are the
   single source for the Home and Music pages; don't hardcode track info in
   components. `isReleased()` compares against the build date, so release-day
-  copy changes need a rebuild.
+  copy changes need a rebuild. `listenLinks()` decides each release's
+  pre-save/store buttons and their order for Home, Music and the JSON-LD
+  `sameAs`; add a new store there, not in the pages.
 - `src/data/covers.ts` — cover image per release slug, kept out of
   `album.ts` so that file has no asset imports.
 - `src/lib/schema.ts` — builds the site's linked JSON-LD `@graph` from
