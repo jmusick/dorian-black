@@ -1,7 +1,7 @@
 {
   "name": "dorian-black",
   "type": "module",
-  "version": "1.10.6",
+  "version": "1.10.7",
   "engines": {
     "node": ">=22.18.0"
   },
