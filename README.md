@@ -117,7 +117,8 @@ config but upload nothing; preview URLs stay off. The builder installs with
 npm 10.9.2. Build variables and runtime secrets are separate in Workers.
 
 Dependabot (`.github/dependabot.yml`) opens a monthly grouped PR for minor and
-patch npm updates.
+patch npm updates. It skips `@types/node` majors, which follow the Node
+`engines` floor in `package.json` and get bumped by hand alongside it.
 
 `public/_redirects` gives existing pages permanent (308) redirects to their
 canonical trailing-slash URLs, including `/index.html` aliases. Add aliases

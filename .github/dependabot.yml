@@ -16,6 +16,11 @@ updates:
     cooldown:
       default-days: 7
       semver-major-days: 14
+    ignore:
+      # Node types track the engines floor in package.json (Node 22), not the newest Node. Bump this major
+      # by hand together with "engines".
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     groups:
       # The framework, its adapter and the Workers toolchain move together and are tested together.
       astro-and-cloudflare:
