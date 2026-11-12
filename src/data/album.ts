@@ -167,8 +167,8 @@ export interface ListenLinkOptions<P extends StoreProfile> {
  * The listen/store buttons for a release, in display order: the HyperFollow
  * pre-save before release; once out, Spotify (HyperFollow "Listen now" until
  * the direct store link is available), then Apple Music, then any store
- * profile the release has no album link for. The Spotify button always
- * stands in for the Spotify profile.
+ * profile the release has no album link for. The Spotify profile is never
+ * listed: the Spotify/HyperFollow button covers Spotify.
  */
 export function listenLinks<P extends StoreProfile>(
 	release: Release,
