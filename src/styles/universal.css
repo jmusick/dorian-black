@@ -225,15 +225,6 @@ p {
 	margin: 0;
 }
 
-/* Stat line styled like an h2 but not a heading (e.g. "12 tracks · 49m"). */
-.stat-line {
-	font-family: var(--font-display);
-	font-size: var(--text-h2);
-	font-weight: 400;
-	line-height: var(--lh-heading);
-	color: var(--text-primary);
-}
-
 /* Visible to assistive technology only. */
 .visually-hidden {
 	position: absolute;
@@ -526,16 +517,6 @@ img {
 	color: var(--void-2);
 	background: var(--magenta);
 	border: none;
-}
-
-.badge-blue {
-	color: #3d8bff; /* lightened --blue for 4.5:1 text contrast on void (#8) */
-	border-color: var(--blue);
-}
-
-.badge-neutral {
-	color: var(--ink-2);
-	border-color: var(--ink-2);
 }
 
 /* ── Layout utilities ────────────────────────── */
