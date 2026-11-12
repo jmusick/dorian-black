@@ -132,8 +132,8 @@ const functionUnavailable = import.meta.env.DEV;
 				{functionUnavailable && (
 					<p class="dev-note">
 						<strong>Development mode:</strong> Turnstile uses its test key here, but
-						<code>astro dev</code> does not serve <code>/api/contact</code>. Build the site,
-						then use <code>npx wrangler pages dev dist</code> to test submission.
+						<code>astro dev</code> does not serve <code>/api/contact</code>. Use
+						<code>npm run dev:worker</code> to test submission.
 					</p>
 				)}
 			</form>
