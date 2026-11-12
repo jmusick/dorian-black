@@ -1,6 +1,6 @@
 import { getImage } from "astro:assets";
 import { ACTIVE_SOCIALS, ARTIST_GENRE, SITE_NAME, SITE_TAGLINE, SITE_URL } from "../config/site";
-import { RELEASES, formatDuration, listenLinks, type Release } from "../data/album";
+import { RELEASES, albumLinks, formatDuration, type Release } from "../data/album";
 import { COVERS } from "../data/covers";
 
 /**
@@ -61,10 +61,7 @@ export async function buildSchemaGraph({ album = false }: SchemaGraphOptions = {
 		for (const release of RELEASES) {
 			const coverImage = await getImage({ src: COVERS[release.slug], width: 1200 });
 			const id = albumId(release);
-			// The album pages, listed whether or not the build counts the release as out.
-			const storeUrls = listenLinks(release, { released: true })
-				.filter((link) => link.albumPage)
-				.map((link) => link.href);
+			const storeUrls = albumLinks(release).map((link) => link.href);
 			graph.push({
 				"@type": "MusicAlbum",
 				"@id": id,

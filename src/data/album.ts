@@ -1,3 +1,5 @@
+import type { SocialLink } from "../config/site";
+
 /**
  * Dorian Black's releases, newest first. Track order, durations, and release
  * dates here are the single source for the Home and Music pages and the
@@ -133,15 +135,11 @@ export function releaseStatus(release: Release): string {
 	return `Out ${releaseDay(release).toLocaleDateString("en-US", { month: "long", day: "numeric" })}`;
 }
 
-/** The shape of a store profile from `ACTIVE_SOCIALS` in src/config/site.ts. */
-export interface StoreProfile {
-	label: string;
-	href: string;
-	streaming?: boolean;
-}
+/** A live profile from `ACTIVE_SOCIALS` (type-only import, so no runtime cycle with site.ts). */
+type StoreProfile = SocialLink & { href: string };
 
 /** One listen/store button for a release. */
-export interface ListenLink<P extends StoreProfile = StoreProfile> {
+export interface ListenLink {
 	label: string;
 	href: string;
 	/** The release's main call to action: the pre-save, or the Spotify/HyperFollow link once out. */
@@ -149,16 +147,16 @@ export interface ListenLink<P extends StoreProfile = StoreProfile> {
 	/** The release's own Spotify or Apple Music album page (the JSON-LD `sameAs` links). */
 	albumPage: boolean;
 	/** Set when the button falls back to an artist store profile instead of an album link. */
-	profile?: P;
+	profile?: StoreProfile;
 }
 
-export interface ListenLinkOptions<P extends StoreProfile> {
+export interface ListenLinkOptions {
 	/**
 	 * Artist profiles (pass `ACTIVE_SOCIALS`) to fall back on for stores the
 	 * release has no album link for. Passed in because src/config/site.ts
 	 * imports this file. Omit for no profile fallback.
 	 */
-	profiles?: readonly P[];
+	profiles?: readonly StoreProfile[];
 	/** Treat the release as out (or not) instead of checking the build date. */
 	released?: boolean;
 }
@@ -170,11 +168,11 @@ export interface ListenLinkOptions<P extends StoreProfile> {
  * profile the release has no album link for. The Spotify profile is never
  * listed: the Spotify/HyperFollow button covers Spotify.
  */
-export function listenLinks<P extends StoreProfile>(
+export function listenLinks(
 	release: Release,
-	{ profiles = [], released = isReleased(release) }: ListenLinkOptions<P> = {},
-): ListenLink<P>[] {
-	const links: ListenLink<P>[] = [];
+	{ profiles = [], released = isReleased(release) }: ListenLinkOptions = {},
+): ListenLink[] {
+	const links: ListenLink[] = [];
 	if (!released) {
 		if (release.hyperfollowUrl) {
 			links.push({ label: "Pre-save on Spotify", href: release.hyperfollowUrl, primary: true, albumPage: false });
@@ -190,11 +188,16 @@ export function listenLinks<P extends StoreProfile>(
 		links.push({ label: "Listen on Apple Music", href: release.appleMusicUrl, primary: false, albumPage: true });
 	}
 	for (const profile of profiles) {
-		if (!profile.streaming || profile.label === "Spotify") continue;
-		if (profile.label === "Apple Music" && release.appleMusicUrl) continue;
+		if (!profile.streaming || profile.icon === "simple-icons:spotify") continue;
+		if (profile.icon === "simple-icons:applemusic" && release.appleMusicUrl) continue;
 		links.push({ label: profile.label, href: profile.href, primary: false, albumPage: false, profile });
 	}
 	return links;
+}
+
+/** The release's own Spotify and Apple Music album pages, whatever the build date. */
+export function albumLinks(release: Release): ListenLink[] {
+	return listenLinks(release, { released: true }).filter((link) => link.albumPage);
 }
 
 /**

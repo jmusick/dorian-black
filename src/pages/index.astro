@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
-import { AFTER_TONIGHT, LATEST, formatDuration, isReleased, listenLinks, releaseDay, releaseRuntime } from "../data/album";
+import { AFTER_TONIGHT, LATEST, albumLinks, formatDuration, isReleased, listenLinks, releaseDay, releaseRuntime } from "../data/album";
 import { COVERS } from "../data/covers";
 import { META_DESCRIPTIONS, NEW_TAB_HINT, SITE_NAME, SITE_URL } from "../config/site";
 import { buildSchemaGraph } from "../lib/schema";
@@ -21,8 +21,7 @@ const latestDay = releaseDay(LATEST).toLocaleDateString("en-US", {
 const latestLinks = listenLinks(LATEST);
 
 const catalog = AFTER_TONIGHT;
-// The back catalog shows its album pages whatever the build date.
-const catalogLinks = listenLinks(catalog, { released: true }).filter((link) => link.albumPage);
+const catalogLinks = albumLinks(catalog);
 const playerRelease = latestOut && LATEST.spotifyUrl ? LATEST : catalog;
 const spotifyAlbumId = playerRelease.spotifyUrl?.match(/open\.spotify\.com\/album\/([A-Za-z0-9]+)/)?.[1];
 const spotifyEmbedUrl = `https://open.spotify.com/embed/album/${spotifyAlbumId}?utm_source=generator&theme=0`;
