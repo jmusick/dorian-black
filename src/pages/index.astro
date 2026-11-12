@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
-import { AFTER_TONIGHT, LATEST, formatDuration, isReleased, releaseRuntime } from "../data/album";
+import { AFTER_TONIGHT, LATEST, formatDuration, isReleased, listenLinks, releaseDay, releaseRuntime } from "../data/album";
 import { COVERS } from "../data/covers";
 import { META_DESCRIPTIONS, NEW_TAB_HINT, SITE_NAME, SITE_URL } from "../config/site";
 import { buildSchemaGraph } from "../lib/schema";
@@ -12,16 +12,17 @@ const structuredData = await buildSchemaGraph({ album: true });
 
 const latestCover = COVERS[LATEST.slug];
 const latestOut = isReleased(LATEST);
-const latestDay = new Date(`${LATEST.releaseDate}T00:00:00`).toLocaleDateString("en-US", {
+const latestDay = releaseDay(LATEST).toLocaleDateString("en-US", {
 	weekday: "long",
 	month: "long",
 	day: "numeric",
 });
-// HyperFollow remains the fallback until direct store links are available.
-const latestListenUrl = latestOut ? (LATEST.spotifyUrl ?? LATEST.hyperfollowUrl) : LATEST.hyperfollowUrl;
-const latestListenLabel = latestOut ? (LATEST.spotifyUrl ? "Listen on Spotify" : "Listen now") : "Pre-save on Spotify";
+// No store-profile fallback in the hero; the Music page has those.
+const latestLinks = listenLinks(LATEST);
 
 const catalog = AFTER_TONIGHT;
+// The back catalog shows its album pages whatever the build date.
+const catalogLinks = listenLinks(catalog, { released: true }).filter((link) => link.albumPage);
 const playerRelease = latestOut && LATEST.spotifyUrl ? LATEST : catalog;
 const spotifyAlbumId = playerRelease.spotifyUrl?.match(/open\.spotify\.com\/album\/([A-Za-z0-9]+)/)?.[1];
 const spotifyEmbedUrl = `https://open.spotify.com/embed/album/${spotifyAlbumId}?utm_source=generator&theme=0`;
@@ -51,16 +52,11 @@ const spotifyEmbedHeight = Math.min(760, Math.max(352, 170 + playerRelease.track
 				</p>
 				<p class="hero-sub">{LATEST.blurb}</p>
 				<div class="hero-cta">
-					{latestListenUrl && (
-						<a class="btn btn-primary btn-lg" href={latestListenUrl} target="_blank" rel="noopener noreferrer">
-							{latestListenLabel}<span class="visually-hidden"> {NEW_TAB_HINT}</span>
+					{latestLinks.map((link) => (
+						<a class={link.primary ? "btn btn-primary btn-lg" : "btn btn-secondary btn-lg"} href={link.href} target="_blank" rel="noopener noreferrer">
+							{link.label}<span class="visually-hidden"> {NEW_TAB_HINT}</span>
 						</a>
-					)}
-					{latestOut && LATEST.appleMusicUrl && (
-						<a class="btn btn-secondary btn-lg" href={LATEST.appleMusicUrl} target="_blank" rel="noopener noreferrer">
-							Listen on Apple Music<span class="visually-hidden"> {NEW_TAB_HINT}</span>
-						</a>
-					)}
+					))}
 				</div>
 				<p><a href={`/music/#${LATEST.slug}`}>See the full tracklist</a></p>
 			</div>
@@ -143,16 +139,11 @@ const spotifyEmbedHeight = Math.min(760, Math.max(352, 170 + playerRelease.track
 			<p class="lede">{catalog.blurb}</p>
 
 			<div class="hero-cta">
-				{catalog.spotifyUrl && (
-					<a class="btn btn-secondary" href={catalog.spotifyUrl} target="_blank" rel="noopener noreferrer">
-						Listen on Spotify<span class="visually-hidden"> {NEW_TAB_HINT}</span>
+				{catalogLinks.map((link) => (
+					<a class="btn btn-secondary" href={link.href} target="_blank" rel="noopener noreferrer">
+						{link.label}<span class="visually-hidden"> {NEW_TAB_HINT}</span>
 					</a>
-				)}
-				{catalog.appleMusicUrl && (
-					<a class="btn btn-secondary" href={catalog.appleMusicUrl} target="_blank" rel="noopener noreferrer">
-						Listen on Apple Music<span class="visually-hidden"> {NEW_TAB_HINT}</span>
-					</a>
-				)}
+				))}
 			</div>
 		</section>
 	</div>
