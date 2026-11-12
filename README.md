@@ -116,7 +116,7 @@ Other branches (pull requests) run the preview command
 config but upload nothing; preview URLs stay off. The builder installs with
 npm 10.9.2. Build variables and runtime secrets are separate in Workers.
 
-Dependabot (`.github/dependabot.yml`) opens a weekly grouped PR for minor and
+Dependabot (`.github/dependabot.yml`) opens a monthly grouped PR for minor and
 patch npm updates.
 
 `public/_redirects` gives existing pages permanent (308) redirects to their
