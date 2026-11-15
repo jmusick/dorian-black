@@ -3,7 +3,7 @@ import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import { AFTER_TONIGHT, LATEST, albumLinks, formatDuration, isReleased, listenLinks, releaseDay, releaseRuntime } from "../data/album";
 import { COVERS } from "../data/covers";
-import { META_DESCRIPTIONS, NEW_TAB_HINT, SITE_NAME, SITE_URL } from "../config/site";
+import { ARTIST_GENRE, META_DESCRIPTIONS, NEW_TAB_HINT, SITE_NAME, SITE_URL } from "../config/site";
 import { buildSchemaGraph } from "../lib/schema";
 
 const canonicalUrl = `${SITE_URL}/`;
@@ -45,7 +45,11 @@ const spotifyEmbedHeight = Math.min(760, Math.max(352, 170 + playerRelease.track
 
 		<div class="hero-inner hero-release">
 			<div class="hero-copy">
-				<h1 class="hero-title">{LATEST.title}</h1>
+				<p class="eyebrow">{ARTIST_GENRE}</p>
+				<h1 class="hero-title">
+					<span class="hero-artist">{SITE_NAME}<span class="visually-hidden"> —</span></span>
+					{LATEST.title}
+				</h1>
 				<p class="hero-date">
 					{latestOut ? "The new album, out now" : <>The new album, out <time datetime={LATEST.releaseDate}>{latestDay}</time></>}
 				</p>
@@ -57,7 +61,10 @@ const spotifyEmbedHeight = Math.min(760, Math.max(352, 170 + playerRelease.track
 						</a>
 					))}
 				</div>
-				<p><a href={`/music/#${LATEST.slug}`}>See the full tracklist</a></p>
+				<p><a href={`/music/#${LATEST.slug}`}>See the full {LATEST.title} tracklist</a></p>
+				<p>
+					More <a href="/about/">about {SITE_NAME}</a>, or <a href="/contact/">contact {SITE_NAME}</a> for booking and press.
+				</p>
 			</div>
 
 			{/*
@@ -80,7 +87,7 @@ const spotifyEmbedHeight = Math.min(760, Math.max(352, 170 + playerRelease.track
 	<div class="page">
 		<section aria-labelledby="latest-tracks">
 			<div class="section-head">
-				<h2 id="latest-tracks">On the record</h2>
+				<h2 id="latest-tracks">{playerRelease.title} tracklist</h2>
 				<p class="section-meta">{LATEST.tracks.length} tracks, {releaseRuntime(LATEST)}</p>
 			</div>
 			{/* role="list" keeps list semantics in Safari/VoiceOver despite list-style: none. */}
@@ -196,6 +203,15 @@ const spotifyEmbedHeight = Math.min(760, Math.max(352, 170 + playerRelease.track
 
 	.hero-title {
 		text-wrap: balance;
+	}
+
+	.hero-artist {
+		display: block;
+		margin-bottom: var(--space-2);
+		font-size: var(--text-h3);
+		line-height: var(--lh-heading);
+		color: var(--cyan);
+		text-shadow: none;
 	}
 
 	.hero-date {

@@ -19,7 +19,8 @@ const structuredData = await buildSchemaGraph({ album: true });
 	active="music"
 >
 	<div class="page">
-		<h1>Music</h1>
+		<p class="eyebrow">Music</p>
+		<h1 style="margin-top: var(--space-3)">{SITE_NAME} — {RELEASES.map((r) => r.title).join(" and ")}</h1>
 
 		{RELEASES.map((release, i) => {
 			const out = isReleased(release);
