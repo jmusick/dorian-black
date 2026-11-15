@@ -11,6 +11,7 @@ import {
 	socialLabel,
 	TURNSTILE_SITE_KEY,
 } from "../config/site";
+import { CONTACT_LIMITS } from "../config/contact-limits";
 
 const canonicalUrl = `${SITE_URL}/contact/`;
 
@@ -55,7 +56,7 @@ const functionUnavailable = import.meta.env.DEV;
 						id="cf-name"
 						name="name"
 						type="text"
-						maxlength="100"
+						maxlength={CONTACT_LIMITS.name}
 						required
 						autocomplete="name"
 					/>
@@ -68,6 +69,7 @@ const functionUnavailable = import.meta.env.DEV;
 						id="cf-email"
 						name="email"
 						type="email"
+						maxlength={CONTACT_LIMITS.email}
 						required
 						autocomplete="email"
 						aria-describedby="cf-email-hint"
@@ -78,7 +80,7 @@ const functionUnavailable = import.meta.env.DEV;
 
 				<div class="field">
 					<label for="cf-subject">Subject <span class="optional">optional</span></label>
-					<input id="cf-subject" name="subject" type="text" maxlength="150" />
+					<input id="cf-subject" name="subject" type="text" maxlength={CONTACT_LIMITS.subject} />
 				</div>
 
 				<div class="field">
@@ -87,12 +89,12 @@ const functionUnavailable = import.meta.env.DEV;
 						id="cf-message"
 						name="message"
 						rows="8"
-						minlength="10"
-						maxlength="4000"
+						minlength={CONTACT_LIMITS.messageMin}
+						maxlength={CONTACT_LIMITS.messageMax}
 						required
 						aria-describedby="cf-message-hint"
 					></textarea>
-					<span class="field-hint" id="cf-message-hint">At least 10 characters.</span>
+					<span class="field-hint" id="cf-message-hint">At least {CONTACT_LIMITS.messageMin} characters.</span>
 					<p class="field-error" id="cf-message-error" hidden></p>
 				</div>
 
@@ -172,6 +174,8 @@ const functionUnavailable = import.meta.env.DEV;
 
 {turnstileSiteKey && (
 	<script>
+		import { CONTACT_LIMITS } from "../config/contact-limits";
+
 		const form = document.getElementById("contact-form") as HTMLFormElement | null;
 		const status = document.getElementById("cf-status");
 		const alertBox = document.getElementById("cf-alert");
@@ -183,7 +187,6 @@ const functionUnavailable = import.meta.env.DEV;
 				.map((id) => document.getElementById(`cf-${id}`) as Field | null)
 				.filter((el): el is Field => el !== null);
 
-			const MIN_MESSAGE = 10;
 			let sending = false;
 
 			/** Plain-language error for a field, or "" when it is valid. */
@@ -198,8 +201,8 @@ const functionUnavailable = import.meta.env.DEV;
 				}
 				if (field.name === "message") {
 					if (!value) return "Enter a message.";
-					return value.length < MIN_MESSAGE
-						? `Your message must be at least ${MIN_MESSAGE} characters.`
+					return value.length < CONTACT_LIMITS.messageMin
+						? `Your message must be at least ${CONTACT_LIMITS.messageMin} characters.`
 						: "";
 				}
 				return "";

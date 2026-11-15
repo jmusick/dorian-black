@@ -7,6 +7,8 @@
  * through Cloudflare Email Sending. The rest of the site remains static.
  */
 
+import { CONTACT_LIMITS } from "../src/config/contact-limits.ts";
+
 interface ContactPayload {
 	name?: unknown;
 	email?: unknown;
@@ -18,11 +20,7 @@ interface ContactPayload {
 }
 
 const LIMITS = {
-	name: 100,
-	subject: 150,
-	email: 254,
-	messageMin: 10,
-	messageMax: 4000,
+	...CONTACT_LIMITS,
 	/** Turnstile tokens are at most 2048 characters. */
 	captchaToken: 2048,
 	/** Generous for four short fields plus a 4000-character message. */

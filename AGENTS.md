@@ -50,6 +50,9 @@ visual styling or copy.
   GA measurement ID. Entries with `href: null` are auto-hidden by the
   header/footer/Music page — don't special-case missing links elsewhere, just
   fill in the `href`. Use `ACTIVE_SOCIALS` when you need only live links.
+- `src/config/contact-limits.ts` — contact form field limits, imported by both
+  `worker/contact.ts` and `src/pages/contact.astro`. Change a limit here, not
+  in either file. Keep it import-free, since the Worker bundles it.
 - `src/data/album.ts` — release and track data (`SECOND_NATURE`,
   `AFTER_TONIGHT`, `RELEASES` newest first, `LATEST` for the Home hero). Track
   order, durations, release dates, and pre-save/streaming URLs here are the
