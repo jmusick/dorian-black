@@ -23,7 +23,7 @@ export const ARTIST_GENRE = "Synth-pop";
  * override for another deployment.
  */
 export const TURNSTILE_SITE_KEY: string =
-	import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "0x4AAAAAAER8KqCPg1Pn7fHL";
+	import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || "0x4AAAAAAER8KqCPg1Pn7fHL";
 
 /**
  * Google Analytics 4 measurement ID.
@@ -101,7 +101,7 @@ export const ACTIVE_SOCIALS = SOCIALS.filter(
 	(s): s is SocialLink & { href: string } => s.href !== null,
 );
 
-/** Contact-form destination and fallback address when Turnstile is unavailable. */
+/** Contact-form destination and address shown under the form. */
 export const CONTACT_EMAIL = "hello@dorianblack.com";
 
 /**
