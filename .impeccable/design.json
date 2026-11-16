@@ -1,0 +1,181 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-15T00:00:00Z",
+  "title": "Design System: Dorian Black",
+  "extensions": {
+    "colorMeta": {
+      "void": { "role": "neutral", "displayName": "Void", "canonical": "#04000a", "tonalRamp": ["oklch(8% 0.03 305)", "oklch(12% 0.035 305)", "oklch(17% 0.04 305)", "oklch(22% 0.045 305)", "oklch(30% 0.045 305)", "oklch(45% 0.04 305)", "oklch(70% 0.03 305)", "oklch(95% 0.012 305)"] },
+      "void-2": { "role": "neutral", "displayName": "Void Deep", "canonical": "#0a0512" },
+      "surface": { "role": "neutral", "displayName": "Booth", "canonical": "#120a1c" },
+      "surface-2": { "role": "neutral", "displayName": "Booth Raised", "canonical": "#1c1128" },
+      "surface-border": { "role": "neutral", "displayName": "Hairline", "canonical": "#2e1f3d" },
+      "field-border": { "role": "neutral", "displayName": "Field Edge", "canonical": "#7a6c94" },
+      "ink-1": { "role": "neutral", "displayName": "Ink", "canonical": "#f3eef9" },
+      "ink-2": { "role": "neutral", "displayName": "Ink Soft", "canonical": "#b8aec9" },
+      "ink-3": { "role": "neutral", "displayName": "Ink Dim", "canonical": "#9389a8" },
+      "magenta": { "role": "primary", "displayName": "Last Call Magenta", "canonical": "#f900f9", "tonalRamp": ["oklch(15% 0.06 328)", "oklch(25% 0.11 328)", "oklch(35% 0.16 328)", "oklch(45% 0.21 328)", "oklch(55% 0.26 328)", "oklch(65% 0.30 328)", "oklch(80% 0.18 328)", "oklch(95% 0.04 328)"] },
+      "magenta-hover": { "role": "primary", "displayName": "Last Call Magenta, Hover", "canonical": "#ff33ff" },
+      "blue": { "role": "secondary", "displayName": "Midnight Blue Neon", "canonical": "#0168ff", "tonalRamp": ["oklch(15% 0.06 262)", "oklch(25% 0.11 262)", "oklch(35% 0.16 262)", "oklch(45% 0.21 262)", "oklch(55% 0.24 262)", "oklch(65% 0.19 262)", "oklch(80% 0.11 262)", "oklch(95% 0.03 262)"] },
+      "violet": { "role": "tertiary", "displayName": "Afterglow Violet", "canonical": "#ae00f8", "tonalRamp": ["oklch(15% 0.07 305)", "oklch(25% 0.12 305)", "oklch(35% 0.18 305)", "oklch(45% 0.24 305)", "oklch(55% 0.29 305)", "oklch(65% 0.24 305)", "oklch(80% 0.14 305)", "oklch(95% 0.03 305)"] },
+      "cyan": { "role": "tertiary", "displayName": "Streetlight Cyan", "canonical": "#22d3f7", "tonalRamp": ["oklch(15% 0.03 215)", "oklch(25% 0.05 215)", "oklch(35% 0.07 215)", "oklch(45% 0.09 215)", "oklch(55% 0.11 215)", "oklch(65% 0.13 215)", "oklch(80% 0.13 215)", "oklch(95% 0.04 215)"] },
+      "cyan-hover": { "role": "tertiary", "displayName": "Streetlight Cyan, Hover", "canonical": "#7fe8fb" },
+      "success": { "role": "status", "displayName": "Success", "canonical": "#00f5a0" },
+      "error": { "role": "status", "displayName": "Error", "canonical": "#ff3366" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Home hero album title only; white with the magenta glow, max 12ch." },
+      "display-2": { "displayName": "Display 2", "purpose": "Release titles on the Music page." },
+      "headline": { "displayName": "Headline", "purpose": "Page h1s." },
+      "title": { "displayName": "Title", "purpose": "h2." },
+      "title-sm": { "displayName": "Title Small", "purpose": "h3; the hero artist line and release date in cyan; the player facade title." },
+      "body-lg": { "displayName": "Body Large", "purpose": "Ledes (60ch), hero copy (46ch), track titles at 600-700, form inputs." },
+      "body": { "displayName": "Body", "purpose": "Default running text in Ink Soft." },
+      "body-sm": { "displayName": "Body Small", "purpose": "Meta rows, track notes, durations, footer, hints; tabular figures for numbers." },
+      "label": { "displayName": "Label", "purpose": "Uppercase eyebrows in cyan and badges." },
+      "nav": { "displayName": "Nav", "purpose": "Uppercase header navigation links." },
+      "button": { "displayName": "Button", "purpose": "Uppercase pill button labels." },
+      "script": { "displayName": "Script", "purpose": "The artist's name in the footer, once per page. Nowhere else." }
+    },
+    "fontStatus": "provisional: Audiowide, Rajdhani and Dancing Script are self-hosted stand-ins until brand fonts are chosen; keep the three roles, treat the families as replaceable.",
+    "shadows": [
+      { "name": "glow-magenta", "value": "0 0 1px #fff, 0 0 8px rgba(249, 0, 249, 0.8), 0 0 28px rgba(249, 0, 249, 0.45)", "purpose": "Primary button at rest; hero title text-shadow." },
+      { "name": "glow-blue", "value": "0 0 1px #fff, 0 0 8px rgba(1, 104, 255, 0.8), 0 0 28px rgba(1, 104, 255, 0.45)", "purpose": "Hover/focus glow on secondary buttons, social icons and fields." },
+      { "name": "glow-violet", "value": "0 0 1px #fff, 0 0 8px rgba(174, 0, 248, 0.8), 0 0 28px rgba(174, 0, 248, 0.45)", "purpose": "Defined token, currently unused; available for violet-lit elements." },
+      { "name": "shadow-card", "value": "0 12px 32px rgba(0, 0, 0, 0.55)", "purpose": "Release cover art at rest." },
+      { "name": "shadow-card-hover", "value": "0 20px 48px rgba(249, 0, 249, 0.18), 0 12px 32px rgba(0, 0, 0, 0.6)", "purpose": "Release cover art on hover, with a 4px lift." },
+      { "name": "hero-cover", "value": "0 0 0 1px rgba(255, 255, 255, 0.08), 0 24px 64px rgba(0, 0, 0, 0.6), 0 0 80px rgba(174, 0, 248, 0.25)", "purpose": "The latest album cover on Home: the brightest object in the room." },
+      { "name": "panel-ambient", "value": "0 0 44px rgba(174, 0, 248, 0.09), 0 12px 32px rgba(0, 0, 0, 0.55)", "purpose": "Contact form panel; the ceiling for glow on a static container." },
+      { "name": "banner", "value": "0 12px 40px rgba(0, 0, 0, 0.45)", "purpose": "Cookie banner only." }
+    ],
+    "gradients": [
+      { "name": "gradient-neon", "value": "linear-gradient(90deg, #f900f9, #ae00f8, #0168ff)", "purpose": "Hairlines only: section rule at 35% opacity, contact panel top edge at 75%." },
+      { "name": "page-washes", "value": "radial-gradient(ellipse at 50% -10%, rgba(174, 0, 248, 0.18) 0%, transparent 55%), radial-gradient(ellipse at 90% 100%, rgba(1, 104, 255, 0.12) 0%, transparent 50%)", "purpose": "Body background over Void; fixed above 900px, scrolls below." }
+    ],
+    "effects": [
+      { "name": "blur-glass", "value": "blur(16px)", "purpose": "Sticky header backdrop over 80% Void." },
+      { "name": "focus-ring", "value": "outline: 2px solid #22d3f7; outline-offset: 3px", "purpose": "Global :focus-visible on every element; fields replace it with a cyan border, ring and blue glow." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Default easing for hovers, glows and the mobile menu." },
+      { "name": "ease-in-out", "value": "cubic-bezier(0.65, 0, 0.35, 1)", "purpose": "Defined token for symmetric transitions." },
+      { "name": "duration-fast", "value": "120ms", "purpose": "Color changes and button lift." },
+      { "name": "duration-base", "value": "220ms", "purpose": "Glow, background and border transitions." },
+      { "name": "duration-slow", "value": "420ms", "purpose": "Mobile menu open/close." },
+      { "name": "reduced-motion", "value": "all animation and transition durations 0.01ms", "purpose": "prefers-reduced-motion: reduce." }
+    ],
+    "breakpoints": [
+      { "name": "md", "value": "900px", "purpose": "Header collapses to a toggle; two-column layouts stack; footer centers." },
+      { "name": "sm", "value": "480px", "purpose": "Smaller logo, full-width hero and form buttons, tighter track grid." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one magenta action in a group: Listen, Send message, Accept.",
+      "html": "<a class=\"ds-btn ds-btn-primary\" href=\"#\">Listen on Spotify</a>",
+      "css": ".ds-btn { font-family: var(--font-body, 'Rajdhani', sans-serif); font-weight: 700; font-size: 15px; letter-spacing: 0.06em; text-transform: uppercase; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: none; border-radius: 999px; padding: 13px 28px; cursor: pointer; text-decoration: none; transition: transform 120ms cubic-bezier(0.16,1,0.3,1), box-shadow 220ms cubic-bezier(0.16,1,0.3,1), background 220ms cubic-bezier(0.16,1,0.3,1), color 220ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-primary { background: var(--magenta, #f900f9); color: var(--void-2, #0a0512); box-shadow: var(--glow-magenta, 0 0 1px #fff, 0 0 8px rgba(249,0,249,.8), 0 0 28px rgba(249,0,249,.45)); } .ds-btn-primary:hover { background: #ff33ff; transform: translateY(-1px); } .ds-btn:focus-visible { outline: 2px solid var(--cyan, #22d3f7); outline-offset: 3px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Blue-outlined pill for store links and every non-primary action.",
+      "html": "<a class=\"ds-btn-secondary\" href=\"#\">Listen on Apple Music</a>",
+      "css": ".ds-btn-secondary { font-family: var(--font-body, 'Rajdhani', sans-serif); font-weight: 700; font-size: 15px; letter-spacing: 0.06em; text-transform: uppercase; display: inline-flex; align-items: center; border-radius: 999px; padding: 13px 28px; text-decoration: none; background: transparent; color: var(--ink-1, #f3eef9); box-shadow: inset 0 0 0 1.5px var(--blue, #0168ff); transition: transform 120ms cubic-bezier(0.16,1,0.3,1), box-shadow 220ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-secondary:hover { box-shadow: var(--glow-blue, 0 0 1px #fff, 0 0 8px rgba(1,104,255,.8), 0 0 28px rgba(1,104,255,.45)), inset 0 0 0 1.5px var(--blue, #0168ff); transform: translateY(-1px); } .ds-btn-secondary:focus-visible { outline: 2px solid var(--cyan, #22d3f7); outline-offset: 3px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Hairline pill for low-stakes choices like Decline.",
+      "html": "<button class=\"ds-btn-ghost\" type=\"button\">Decline</button>",
+      "css": ".ds-btn-ghost { font-family: var(--font-body, 'Rajdhani', sans-serif); font-weight: 700; font-size: 15px; letter-spacing: 0.06em; text-transform: uppercase; border: none; border-radius: 999px; padding: 13px 28px; cursor: pointer; background: transparent; color: var(--ink-2, #b8aec9); box-shadow: inset 0 0 0 1px var(--surface-border, #2e1f3d); transition: color 220ms cubic-bezier(0.16,1,0.3,1), box-shadow 220ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-ghost:hover { color: var(--ink-1, #f3eef9); box-shadow: inset 0 0 0 1px var(--ink-2, #b8aec9); } .ds-btn-ghost:focus-visible { outline: 2px solid var(--cyan, #22d3f7); outline-offset: 3px; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Contact form field with uppercase label; cyan border, ring and blue glow on focus.",
+      "html": "<div class=\"ds-field\"><label class=\"ds-field-label\" for=\"ds-name\">Name</label><input class=\"ds-input\" id=\"ds-name\" type=\"text\" autocomplete=\"name\"></div>",
+      "css": ".ds-field { display: flex; flex-direction: column; gap: 8px; font-family: var(--font-body, 'Rajdhani', sans-serif); } .ds-field-label { font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-1, #f3eef9); } .ds-input { width: 100%; border: 1px solid #7a6c94; border-radius: 4px; background: var(--void-2, #0a0512); color: var(--ink-1, #f3eef9); font: inherit; font-size: 19px; padding: 12px 16px; transition: border-color 220ms cubic-bezier(0.16,1,0.3,1), box-shadow 220ms cubic-bezier(0.16,1,0.3,1); } .ds-input:focus-visible { outline: none; border-color: var(--cyan, #22d3f7); box-shadow: 0 0 0 2px rgba(34,211,247,.18), var(--glow-blue, 0 0 1px #fff, 0 0 8px rgba(1,104,255,.8), 0 0 28px rgba(1,104,255,.45)); } .ds-input[aria-invalid='true'] { border-color: var(--error, #ff3366); }"
+    },
+    {
+      "name": "Site Navigation",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Uppercase tracked links in Ink Dim; the active page is Ink with a magenta underline.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Main\"><a href=\"#\" class=\"ds-nav-link is-active\" aria-current=\"page\">Home</a><a href=\"#\" class=\"ds-nav-link\">Music</a><a href=\"#\" class=\"ds-nav-link\">About</a><a href=\"#\" class=\"ds-nav-link\">Contact</a></nav>",
+      "css": ".ds-nav { display: flex; align-items: center; gap: 8px; } .ds-nav-link { font-family: var(--font-body, 'Rajdhani', sans-serif); font-size: 14px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-3, #9389a8); text-decoration: none; padding: 8px 12px; border-bottom: 2px solid transparent; transition: color 220ms cubic-bezier(0.16,1,0.3,1), border-color 220ms cubic-bezier(0.16,1,0.3,1); } .ds-nav-link:hover { color: var(--ink-1, #f3eef9); } .ds-nav-link.is-active { color: var(--ink-1, #f3eef9); border-bottom-color: var(--magenta, #f900f9); } .ds-nav-link:focus-visible { outline: 2px solid var(--cyan, #22d3f7); outline-offset: 3px; border-radius: 4px; }"
+    },
+    {
+      "name": "Social Icon Link",
+      "kind": "custom",
+      "refersTo": "social-icon",
+      "description": "Hairline-ringed circular icon link; cyan with blue glow on hover.",
+      "html": "<a class=\"ds-social\" href=\"#\" aria-label=\"Dorian Black on a streaming service (opens in a new tab)\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M9 18V5l12-2v13\"/><circle cx=\"6\" cy=\"18\" r=\"3\"/><circle cx=\"18\" cy=\"16\" r=\"3\"/></svg></a>",
+      "css": ".ds-social { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 999px; border: 1px solid var(--surface-border, #2e1f3d); color: var(--ink-2, #b8aec9); transition: box-shadow 220ms cubic-bezier(0.16,1,0.3,1), color 120ms cubic-bezier(0.16,1,0.3,1); } .ds-social svg { width: 18px; height: 18px; } .ds-social:hover { color: var(--cyan, #22d3f7); box-shadow: var(--glow-blue, 0 0 1px #fff, 0 0 8px rgba(1,104,255,.8), 0 0 28px rgba(1,104,255,.45)); } .ds-social:focus-visible { outline: 2px solid var(--cyan, #22d3f7); outline-offset: 3px; }"
+    },
+    {
+      "name": "Release Badge",
+      "kind": "chip",
+      "refersTo": "badge",
+      "description": "Magenta pill marking release status.",
+      "html": "<span class=\"ds-badge\">Out now</span> <span class=\"ds-badge ds-badge-filled\">New</span>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; font-family: var(--font-body, 'Rajdhani', sans-serif); font-weight: 600; font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; color: var(--magenta, #f900f9); border: 1px solid var(--magenta, #f900f9); } .ds-badge-filled { color: var(--void-2, #0a0512); background: var(--magenta, #f900f9); border: none; }"
+    },
+    {
+      "name": "Panel",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "Flat Booth container with hairline border; the contact variant adds an ambient violet glow and a neon top hairline.",
+      "html": "<div class=\"ds-panel\"><p class=\"ds-eyebrow\">About</p><p class=\"ds-lede\">Synth-pop for the hours most records sleep through.</p></div>",
+      "css": ".ds-panel { position: relative; background: var(--surface, #120a1c); border: 1px solid var(--surface-border, #2e1f3d); border-radius: 20px; padding: clamp(20px, 3vw, 32px); box-shadow: 0 0 44px rgba(174,0,248,.09), 0 12px 32px rgba(0,0,0,.55); } .ds-panel::before { content: ''; position: absolute; inset: 0 24px auto; height: 1px; background: linear-gradient(90deg, #f900f9, #ae00f8, #0168ff); opacity: .75; } .ds-eyebrow { margin: 0; font-family: var(--font-body, 'Rajdhani', sans-serif); font-size: 12px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--cyan, #22d3f7); } .ds-lede { margin: 12px 0 0; font-family: var(--font-body, 'Rajdhani', sans-serif); font-size: 19px; line-height: 1.55; color: var(--ink-2, #b8aec9); max-width: 60ch; }"
+    },
+    {
+      "name": "Tracklist",
+      "kind": "custom",
+      "description": "Signature hairline-ruled tracklist: tabular number, bold title with a note, right-aligned duration.",
+      "html": "<ol class=\"ds-tracklist\"><li class=\"ds-track\"><span class=\"ds-track-n\">01</span><span><span class=\"ds-track-title\">Same Name</span><span class=\"ds-track-note\">Off the wall when the bass comes in.</span></span><span class=\"ds-track-time\">3:50</span></li><li class=\"ds-track\"><span class=\"ds-track-n\">02</span><span><span class=\"ds-track-title\">More Than I Asked For</span><span class=\"ds-track-note\">Folding sheets, missing the same note.</span></span><span class=\"ds-track-time\">4:00</span></li></ol>",
+      "css": ".ds-tracklist { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--surface-border, #2e1f3d); font-family: var(--font-body, 'Rajdhani', sans-serif); } .ds-track { display: grid; grid-template-columns: 2.5rem 1fr auto; align-items: baseline; gap: 16px; padding: 16px 12px; border-bottom: 1px solid var(--surface-border, #2e1f3d); transition: background 220ms cubic-bezier(0.16,1,0.3,1); } .ds-track:hover { background: rgba(28,17,40,.6); } .ds-track-n, .ds-track-time { font-size: 14px; color: var(--ink-3, #9389a8); font-variant-numeric: tabular-nums; } .ds-track-n { letter-spacing: 0.06em; } .ds-track-title { display: block; font-size: 19px; font-weight: 700; color: var(--ink-1, #f3eef9); } .ds-track-note { display: block; font-size: 14px; color: var(--ink-3, #9389a8); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Neon Afterhours",
+    "overview": "The site is the club after last call: the room has gone dark, but the signs are still lit. Every page starts from near-black (`void`) with two faint washes of light in the background, violet from above and blue from the lower right, like a sign glowing off-screen. Against that dark, color is light, not paint. Magenta, violet and blue appear as glows, hairlines, underlines and the one button you are meant to press, never as flat fills behind text.\n\nDensity is low and the mood is nocturnal. Content sits in a single 1200px column with generous vertical gaps. Type does the scene-setting: a wide, rounded display face for titles, a narrow technical sans for everything else, and one handwritten flourish in the footer. Album covers are the only imagery and carry most of the color.\n\nThe system is allowed to get brighter. Future work may push more neon (gradient rules, glowing panels, tinted washes) where it serves a release, as long as text stays legible and the room stays dark. It must never tip into 80s-parody synthwave, gaming HUD chrome, or a flat streaming-app clone.",
+    "keyCharacteristics": [
+      "Near-black, violet-tinted base with fixed radial light washes.",
+      "Neon used as emitted light: glows, 1–2px lines, text-shadow, and one primary action.",
+      "Audiowide titles, Rajdhani body and labels, Dancing Script as a single signature.",
+      "Pill-shaped controls, softly rounded panels, square-ish fields.",
+      "Album cover art as the only imagery."
+    ],
+    "rules": [
+      { "name": "The Light, Not Paint Rule", "body": "Neon is emitted light: glows, hairlines, outlines, text-shadow and the primary button. Large flat neon fills behind running text are not part of the system. When adding more neon, add it as light around things, not as the background of reading surfaces.", "section": "colors" },
+      { "name": "The One Magenta Action Rule", "body": "Each view has at most one magenta-filled control in a group. Everything beside it is a blue-outlined secondary or a ghost button.", "section": "colors" },
+      { "name": "The Measured Contrast Rule", "body": "Text stays in `ink-1`, `ink-2` or `ink-3`, or in `magenta` / `cyan`, which pass 4.5:1 on `void`. Blue and violet never carry text below large-text size. Check any new color with the WCAG luminance formula against its real background.", "section": "colors" },
+      { "name": "The Sign and Readout Rule", "body": "Audiowide is for names and titles (artist, albums, page headings) at 22px and up. Everything you read in sequence (copy, labels, buttons, data) is Rajdhani. Never set paragraphs in the display face.", "section": "typography" },
+      { "name": "The Single Signature Rule", "body": "The script face marks the artist's name once per page, in the footer. It is never a heading, label or button.", "section": "typography" },
+      { "name": "The Glow Means Live Rule", "body": "A glow says \"this is lit and you can touch it\", or it marks the hero title. Static containers don't glow at rest (the contact panel's 9% ambient is the ceiling). Hover and focus may add glow; nothing else should.", "section": "elevation" }
+    ],
+    "dos": [
+      "**Do** start every surface from `void` with the violet and blue radial washes, and let neon arrive as light: glows, 1–2px lines, text-shadow.",
+      "**Do** keep one magenta-filled action per group; use blue-outlined secondary pills for everything else.",
+      "**Do** use cyan for information (eyebrows, links, dates) and magenta for action and status.",
+      "**Do** set names and titles in the display face at 22px and up, and everything read in sequence in the body face.",
+      "**Do** push more neon when a release calls for it (gradient rules, glowing edges, tinted washes), as long as text keeps 4.5:1 against its actual background.",
+      "**Do** keep album covers as the dominant imagery, with deep black shadows and colored halos rather than frames.",
+      "**Do** respect `prefers-reduced-motion`; motion stays short (120–420ms) on the `cubic-bezier(0.16, 1, 0.3, 1)` ease-out."
+    ],
+    "donts": [
+      "**Don't** set body copy, labels or small text in Midnight Blue Neon or Afterglow Violet; they fail 4.5:1 on `void`.",
+      "**Don't** fill reading surfaces with flat neon or put running text on a neon background.",
+      "**Don't** drift into retro synthwave kitsch: no outrun grids, chrome sunsets, palm trees, VHS scanlines or 80s-parody chrome type.",
+      "**Don't** borrow gaming or esports UI: no angular HUD frames, notched corners, scan-line overlays or RGB-keyboard rainbow effects.",
+      "**Don't** flatten into a generic streaming-app layout: no light theme, no grey card grids, no stock player chrome without the night around it.",
+      "**Don't** use the script face anywhere except the artist's name in the footer, and don't add a fourth font family.",
+      "**Don't** glow static containers at rest beyond the contact panel's faint ambient; glow is for the lit, the pressable, and the hero title."
+    ]
+  }
+}
